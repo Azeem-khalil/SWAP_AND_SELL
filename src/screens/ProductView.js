@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import { Box, Center, Heading, HStack, Image, ScrollView } from 'native-base';
 import { Rating } from 'react-native-ratings';
-
+import NumericInput from 'react-native-numeric-input';
 const ProductView = () => {
   return (
     <Box safeArea flex={1} bg={'#ffffff'}>
@@ -22,7 +22,21 @@ const ProductView = () => {
             <Rating ratingCount={5} imageSize={15} startingValue={5} />
           </HStack>
         </Box>
-        <HStack space={0.4} mt={1} alignItems="center"></HStack>
+        <HStack space={2} mY={5} alignItems="center">
+          <NumericInput
+            onChange={value => console.log(value)}
+            totalWidth={140}
+            totalHeight={30}
+            iconSize={25}
+            step={1}
+            valueType="real"
+            rounded
+            textColor="#B0228C"
+            iconStyle={{ color: 'white' }}
+            rightButtonBackgroundColor="#EA3788"
+            leftButtonBackgroundColor="#E56B70"
+          />
+        </HStack>
       </ScrollView>
     </Box>
   );
