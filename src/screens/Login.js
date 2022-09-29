@@ -12,6 +12,9 @@ import {
 } from 'react-native';
 import firebase from '../DataBase/firebase';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+
+//import { AsyncStorage } from '@react-native-async-storage/async-storage';
+import { AsyncStorage } from 'react-native';
 //import auth from '@react-native-firebase/auth';
 require('firebase/auth');
 const auth = getAuth(firebase);
@@ -30,7 +33,9 @@ export default class Login extends Component {
     state[prop] = val;
     this.setState(state);
   };
-  userLogin = () => {
+  userLogin = async () => {
+    // await AsyncStorage.setItem('key', 'val1');
+    //await AsyncStorage.setItem('LOGIN_TOKEN', 'azeem');
     if (this.state.email === '' && this.state.password === '') {
       Alert.alert('Enter details to signin!');
     } else {
@@ -39,8 +44,12 @@ export default class Login extends Component {
       });
       signInWithEmailAndPassword(auth, this.state.email, this.state.password)
         .then(res => {
-          //console.log(res);
+          // console.log(h);
+          // history.push("/");
+          AsyncStorage.setItem('LOGIN_TOKEN', 'azeem');
+
           console.log('User logged-in successfully!');
+
           this.setState({
             isLoading: false,
             email: '',
@@ -52,6 +61,9 @@ export default class Login extends Component {
             ToastAndroid.LONG,
             ToastAndroid.BOTTOM,
           );
+          //AsyncStorage.setItem('LOGIN_TOKEN', res);
+          //localStorage
+          //console.log('User ' + res);
           this.props.navigation.navigate('Dashboard');
         })
         .catch(error => {

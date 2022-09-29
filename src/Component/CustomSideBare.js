@@ -15,8 +15,6 @@ import {
 } from '@react-navigation/drawer';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-
 const CustomSideBare = props => {
   const [User, setUser] = useState({ displayName: '', uid: '' });
 

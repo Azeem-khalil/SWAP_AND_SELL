@@ -6,7 +6,7 @@ import { getAuth, signOut } from 'firebase/auth';
 
 //import auth from '@react-native-firebase/auth';
 import AppStackNav from '../navigations/AppStackNav';
-
+console.log(auth);
 require('firebase/auth');
 const auth = getAuth(firebase);
 //const user = auth.currentUser;
