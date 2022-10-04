@@ -57,7 +57,7 @@ export default function App() {
   // }, []);
   // console.log(userData);
   return (
-    //<MyStack />
+    //< />
     <NavigationContainer>
       <NativeBaseProvider>
         <ProductView />

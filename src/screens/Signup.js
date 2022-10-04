@@ -39,13 +39,17 @@ export default class Signup extends Component {
     this.setState(state);
   };
   registerUser = () => {
-    if (this.state.email === '' && this.state.password === '') {
+    if (
+      this.state.displayName === '' ||
+      this.state.email === '' ||
+      this.state.password === ''
+    ) {
       Alert.alert('Enter details to signup!');
     } else {
       this.setState({
-        isLoading: true,
+        isLoading: false,
       });
-
+      this.props.navigation.navigate('Login');
       // auth
       //   .createUserWithEmailAndPassword(
       //     'jane.doe@example.com',
@@ -73,6 +77,7 @@ export default class Signup extends Component {
         this.state.password,
       )
         .then(userCredential => {
+          console.log('ul ');
           //console.log('useremail ' + user.email);
           // Signed in
           //console.log('User registered successfully!');
@@ -114,7 +119,7 @@ export default class Signup extends Component {
           if (error.code === 'auth/invalid-email') {
             console.log('That email address is invalid!');
             ToastAndroid.showWithGravity(
-              'Email Already exist ' + 'That email address is invalid!',
+              'That email address is invalid!',
               ToastAndroid.LONG,
               ToastAndroid.BOTTOM,
             );
