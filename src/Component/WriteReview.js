@@ -2,6 +2,7 @@ import { StyleSheet } from 'react-native';
 import React, { useState } from 'react';
 import {
   Box,
+  Button,
   Center,
   CheckIcon,
   FormControl,
@@ -49,7 +50,26 @@ const WriteReview = () => {
           <FormControl.Label _text={{ fontSize: '12px', fontWeight: 'bold' }}>
             Comment
           </FormControl.Label>
-          <TextArea h={20} w="full" placeholder="Add your "></TextArea>
+          <TextArea
+            h={20}
+            w="full"
+            placeholder="Add your Comment......."
+            borderWidth={0}
+            borderColor={'#f5f5f5'}
+            py={4}
+            _focus={{ bg: '#f5f5f5' }}
+          />
+          <Button
+            w={'full'}
+            h={60}
+            mt={3}
+            mb={5}
+            rounded={'full'}
+            bg={'#000000'}
+            _text={{ color: '#ffffff', fontWeight: 'bold' }}
+            _pressed={{ bg: '#f5f5f5' }}>
+            Submit
+          </Button>
         </FormControl>
       </VStack>
     </Box>

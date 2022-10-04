@@ -60,7 +60,7 @@ export default function App() {
     //< />
     <NavigationContainer>
       <NativeBaseProvider>
-        <ProductView />
+        <Cart />
         {
           //<AppStackNav />
         }

@@ -4,7 +4,11 @@ import { Box, Heading, Image, ScrollView } from 'native-base';
 import Product from '../Component/data/Product';
 
 const Cart = () => {
-  return <Text>cart</Text>;
+  return (
+    <Box flex={1} safeAreaTop bg={'#f8f8ff'}>
+      <Text>cart</Text>
+    </Box>
+  );
 };
 
 export default Cart;

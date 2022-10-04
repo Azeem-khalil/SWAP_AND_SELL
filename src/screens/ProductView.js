@@ -4,10 +4,13 @@ import {
   Box,
   Button,
   Center,
+  CheckIcon,
+  FormControl,
   Heading,
   HStack,
   Image,
   ScrollView,
+  Select,
   Spacer,
 } from 'native-base';
 import { Rating } from 'react-native-ratings';
@@ -15,6 +18,8 @@ import NumericInput from 'react-native-numeric-input';
 import Review from '../Component/Review';
 import WriteReview from '../Component/WriteReview';
 const ProductView = () => {
+  const [size, setsize] = useState('');
+
   return (
     <Box safeArea flex={1} bg={'#ffffff'}>
       <ScrollView px={5} showsVerticalScrollIndicator={false}>
@@ -57,6 +62,27 @@ const ProductView = () => {
               $400
             </Heading>
           </HStack>
+          {/* <FormControl>
+            <FormControl.Label _text={{ fontSize: '12px', fontWeight: 'bold' }}>
+              size
+            </FormControl.Label>
+            <Select
+              minWidth="00"
+              accessibilityLabel="Choose size"
+              placeholder="Choose size"
+              mt="1"
+              py={4}
+              _selectedItem={{
+                endIcon: <CheckIcon size={5} />,
+              }}
+              selectedValue={size}
+              onValueChange={e => setsize(e)}>
+              <Select.Item label="6 " value={1} />
+              <Select.Item label="8" value={2} />
+              <Select.Item label="10" value={3} />
+              <Select.Item label="11" value={4} />
+            </Select>
+          </FormControl> */}
           <Text fontSize={12} lineHeight={24}>
             PS C:\Users\AZEEM\SWAP_AND_SELL react-native run-android info
             Running jetifier to migrate libraries to AndroidX. You can disable
