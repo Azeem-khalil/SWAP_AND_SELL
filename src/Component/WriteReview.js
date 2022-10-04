@@ -49,7 +49,7 @@ const WriteReview = () => {
           <FormControl.Label _text={{ fontSize: '12px', fontWeight: 'bold' }}>
             Comment
           </FormControl.Label>
-          <TextArea h={20} w="full" placeholder="Add your Comment"></TextArea>
+          <TextArea h={20} w="full" placeholder="Add your "></TextArea>
         </FormControl>
       </VStack>
     </Box>
