@@ -14,6 +14,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 import Product from './data/Product';
 import { SwipeListView } from 'react-native-swipe-list-view';
+import DeliveryConfirmModel from './DeliveryConfirmModel';
 
 export default function CartItem() {
   const [listData, setListData] = useState(
@@ -84,7 +85,7 @@ export default function CartItem() {
     <Box>
       <Box mr={3} ml={3}>
         <SwipeListView
-          data={Product}
+          data={Product.slice(0, 1)}
           rightOpenValue={-50}
           previewRowKey="0"
           previewOpenValue={-40}
@@ -96,18 +97,7 @@ export default function CartItem() {
       </Box>
       <Box mt={3}>
         <Center alignItems={'center'}>
-          <Button
-            w={'75%'}
-            h={60}
-            mt={3}
-            mb={5}
-            fontSize={50}
-            rounded={'full'}
-            bg={'#000000'}
-            _text={{ color: '#ffffff', fontWeight: 'bold' }}
-            _pressed={{ bg: '#f5f5f5' }}>
-            Total
-          </Button>
+          <DeliveryConfirmModel />
         </Center>
       </Box>
     </Box>

@@ -1,23 +1,50 @@
 // App.js
 import * as React from 'react';
-import { NativeBaseProvider, Box, HStack, Input } from 'native-base';
-
-import { useEffect, useState } from 'react';
-import { View } from 'react-native';
-//import Constants from 'expo-constants';
-//import { Card } from 'react-native-paper';
-
+import { NativeBaseProvider, StatusBar } from 'native-base';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import AuthNav from './src/navigations/AuthNav';
-import AppStackNav from './src/navigations/AppStackNav';
-//import firebase from '';
-//import firebase from '../DataBase/firebase';
-import { getAuth, signOut } from 'firebase/auth';
-import firebase from './src/DataBase/firebase';
-import ProductView from './src/screens/ProductView';
-import Cart from './src/screens/Cart';
-import Home from './src/screens/Home';
+
+import Login from './src/screens/Login';
+import Signup from './src/screens/Signup';
+
+import BottomNav from './src/Component/Navigation/BottomNav';
+
+require('firebase/auth');
+// const auth = getAuth(firebase);
+// console.log(auth);
+const Stack = createNativeStackNavigator();
+export default function App() {
+  return (
+    <NavigationContainer>
+      <NativeBaseProvider>
+        <StatusBar hidden={false} />
+        <Stack.Navigator
+          initialRouteName="Login"
+          screenOptions={{ headerShow: false }}>
+          <Stack.Screen name={'Login'} component={Login} />
+          <Stack.Screen name={'Signup'} component={Signup} />
+          <Stack.Screen name={'BottomNav'} component={BottomNav} />
+        </Stack.Navigator>
+      </NativeBaseProvider>
+    </NavigationContainer>
+  );
+}
+
+// const [userData, setUserData] = useState([]);
+// const getEntries = async () => {
+//   await AsyncStorage.setItem('key', 'val1');
+//   const value = await AsyncStorage.getItem('key');
+//   setUserData(AsyncStorage.getItem('LOGIN_TOKEN'));
+//   console.log(value);
+// };
+
+// useEffect(() => {
+//   getEntries();
+// }, []);
+// console.log(userData);
+
+// import AuthNav from './src/navigations/AuthNav';
+// import AppStackNav from './src/navigations/AppStackNav';
 //import { AsyncStorage } from '@react-native-async-storage/async-storage';
 
 // function MyStack() {
@@ -37,34 +64,3 @@ import Home from './src/screens/Home';
 //   //   );
 //   // }
 // }
-
-//import { AsyncStorage } from 'react-native';
-require('firebase/auth');
-const auth = getAuth(firebase);
-console.log(auth);
-
-export default function App() {
-  // const [userData, setUserData] = useState([]);
-  // const getEntries = async () => {
-  //   await AsyncStorage.setItem('key', 'val1');
-  //   const value = await AsyncStorage.getItem('key');
-  //   setUserData(AsyncStorage.getItem('LOGIN_TOKEN'));
-  //   console.log(value);
-  // };
-
-  // useEffect(() => {
-  //   getEntries();
-  // }, []);
-  // console.log(userData);
-  return (
-    //< />
-    <NavigationContainer>
-      <NativeBaseProvider>
-        <Cart />
-        {
-          //<AppStackNav />
-        }
-      </NativeBaseProvider>
-    </NavigationContainer>
-  );
-}

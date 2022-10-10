@@ -2,8 +2,10 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { NativeBaseProvider, Box, HStack, Input } from 'native-base';
 import Ionicons from 'react-native-vector-icons/FontAwesome5';
 import React from 'react';
+import { useNavigation } from '@react-navigation/native';
 
 const CustomHeader = () => {
+  const navigation = useNavigation();
   return (
     <Box>
       <HStack
@@ -25,7 +27,7 @@ const CustomHeader = () => {
           _focus={{ bg: '#ffffff' }}
           fontSize={20}
         />
-        <Pressable ml={3}>
+        <Pressable ml={3} onPress={() => navigation.navigate('Cart')}>
           <Ionicons name="shopping-basket" color={'#ffffff'} size={24} />
           <Box
             px={1}
