@@ -15,15 +15,33 @@ const StackNavigation = () => {
   return (
     <Stack.Navigator
       initialRouteName="Home"
-      screenOptions={{ headerShow: false }}>
-      <Stack.Screen name={'Home'} component={Home} />
-      <Stack.Screen name={'Cart'} component={Cart} />
-      <Stack.Screen name={'About'} component={About} />
-      <Stack.Screen name={'Profile'} component={Profile} />
+      screenOptions={{ headerShow: () => false }}>
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name={'Home'}
+        component={Home}
+      />
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name={'About'}
+        component={About}
+      />
       <Stack.Screen name={'ProductView'} component={ProductView} />
-      <Stack.Screen name={'Shose'} component={Shose} />
-      <Stack.Screen name={'Books'} component={Books} />
-      <Stack.Screen name={'Contact'} component={Contact} />
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name={'Shose'}
+        component={Shose}
+      />
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name={'Books'}
+        component={Books}
+      />
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name={'Contact'}
+        component={Contact}
+      />
     </Stack.Navigator>
   );
 };

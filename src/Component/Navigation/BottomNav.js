@@ -49,6 +49,7 @@ const BottomNav = () => {
               )}
             </Center>
           ),
+          headerShown: false,
         }}
       />
       {/* Home */}
@@ -65,6 +66,7 @@ const BottomNav = () => {
               )}
             </Center>
           ),
+          headerShown: false,
         }}
       />
       {/*start Cart */}
@@ -82,6 +84,7 @@ const BottomNav = () => {
               )}
             </Center>
           ),
+          headerShown: false,
         }}
       />
     </Tab.Navigator>

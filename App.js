@@ -20,10 +20,22 @@ export default function App() {
         <StatusBar hidden={false} />
         <Stack.Navigator
           initialRouteName="Login"
-          screenOptions={{ headerShow: false }}>
-          <Stack.Screen name={'Login'} component={Login} />
-          <Stack.Screen name={'Signup'} component={Signup} />
-          <Stack.Screen name={'BottomNav'} component={BottomNav} />
+          screenOptions={{ headerShow: () => false }}>
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name={'Login'}
+            component={Login}
+          />
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name={'Signup'}
+            component={Signup}
+          />
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name={'BottomNav'}
+            component={BottomNav}
+          />
         </Stack.Navigator>
       </NativeBaseProvider>
     </NavigationContainer>

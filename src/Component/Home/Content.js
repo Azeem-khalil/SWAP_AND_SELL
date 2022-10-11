@@ -11,8 +11,11 @@ import {
 } from 'native-base';
 import Product from '../data/Product';
 import Rating from '../../Component/Rating';
+import { useNavigation } from '@react-navigation/native';
 
 const Content = () => {
+  const navigation = useNavigation();
+
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <Flex
@@ -22,7 +25,7 @@ const Content = () => {
         px={6}>
         {Product.map(product => (
           <Pressable
-            onPress={() => console.log("I'm Pressed")}
+            onPress={() => navigation.navigate('ProductView', product)}
             key={product._id}
             w="47%"
             bg={'#ffffff'}

@@ -17,25 +17,33 @@ import { Rating } from 'react-native-ratings';
 import NumericInput from 'react-native-numeric-input';
 import Review from '../Component/Review';
 import WriteReview from '../Component/WriteReview';
-const ProductView = () => {
+import { useNavigation } from '@react-navigation/native';
+
+const ProductView = ({ route }) => {
   const [size, setsize] = useState('');
+  const navigation = useNavigation();
+  const product = route.params;
 
   return (
     <Box safeArea flex={1} bg={'#ffffff'}>
       <ScrollView px={5} showsVerticalScrollIndicator={false}>
         <Image
-          source={require('../assets/shoes/shoes-17770.png')}
-          alt={'product.Name'}
+          source={{ uri: product.Image }}
+          alt={product.Name}
           w="full"
           h={300}
           resizeMode="contain"
         />
         <Heading fontSize={15} bold mb={2} lineHeight={22}>
-          New Adidas shoes qwed
+          {product.Name}
         </Heading>
         <Box>
           <HStack space={0.4} mt={1} alignItems="center">
-            <Rating ratingCount={5} imageSize={10} startingValue={5} />
+            <Rating
+              ratingCount={5}
+              imageSize={10}
+              startingValue={product.rating}
+            />
           </HStack>
         </Box>
 
@@ -59,7 +67,7 @@ const ProductView = () => {
             />
             <Spacer />
             <Heading bold color="#000000" fontSize={19}>
-              $400
+              ${product.price}
             </Heading>
           </HStack>
           {/* <FormControl>
@@ -89,7 +97,12 @@ const ProductView = () => {
             it using "--no-jetifier" flag. (node:8364) Warning: Accessing
             non-existent property 'padLevels' of module exports inside circular
           </Text>
-          <Button borderRadius="full" mt={10} color="#ffffff" bg="#000000">
+          <Button
+            borderRadius="full"
+            mt={10}
+            color="#ffffff"
+            bg="#000000"
+            onPress={() => navigation.navigate('Cart')}>
             ADD TO CADR
           </Button>
           <Review
