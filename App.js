@@ -8,19 +8,48 @@ import Login from './src/screens/Login';
 import Signup from './src/screens/Signup';
 
 import BottomNav from './src/Component/Navigation/BottomNav';
-
-require('firebase/auth');
-// const auth = getAuth(firebase);
+import { firebase, db, auth } from './src/Component/DataBase/firebase';
+import { getAuth } from 'firebase/auth';
+import Product from './src/Component/data/Product';
+import Home from './src/screens/Home';
+import MainPage from './src/mainScreens/MainPage';
+import Mainnavigation from './src/Component/Navigation/Mainnavigation';
 // console.log(auth);
 const Stack = createNativeStackNavigator();
 export default function App() {
+  const [loading, setLoading] = React.useState(true);
+  const [user, setUser] = React.useState(null);
+  // React.useEffect(() => {
+  //   const usersRef = firebase.firestore().collection('users');
+  //   auth.onAuthStateChanged(user => {
+  //     if (user) {
+  //       usersRef
+  //         .doc(user.uid)
+  //         .get()
+  //         .then(document => {
+  //           const userData = document.data();
+  //           setLoading(false);
+  //           setUser(userData);
+  //         })
+  //         .catch(error => {
+  //           setLoading(false);
+  //         });
+  //     } else {
+  //       setLoading(false);
+  //     }
+  //   });
+  // }, []);
+
+  // if (loading) {
+  //   return <></>;
+  // }
   return (
     <NavigationContainer>
       <NativeBaseProvider>
         <StatusBar hidden={false} />
         <Stack.Navigator
           initialRouteName="Login"
-          screenOptions={{ headerShow: () => false }}>
+          screenOptions={{ headerShown: false }}>
           <Stack.Screen
             options={{ headerShown: false }}
             name={'Login'}
@@ -33,8 +62,8 @@ export default function App() {
           />
           <Stack.Screen
             options={{ headerShown: false }}
-            name={'BottomNav'}
-            component={BottomNav}
+            name={'Mainnavigation'}
+            component={Mainnavigation}
           />
         </Stack.Navigator>
       </NativeBaseProvider>

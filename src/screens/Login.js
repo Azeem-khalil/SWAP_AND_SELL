@@ -178,6 +178,8 @@ import {
   Center,
   NativeBaseProvider,
 } from 'native-base';
+import { addDoc, collection } from 'firebase/firestore';
+import { db } from '../Component/DataBase/firebase';
 
 function Login({ navigation }) {
   return (
@@ -224,7 +226,7 @@ function Login({ navigation }) {
               </Link>
             </FormControl>
             <Button
-              onPress={() => navigation.navigate('BottomNav')}
+              onPress={() => navigation.navigate('Mainnavigation')}
               mt="2"
               colorScheme="indigo">
               Sign in

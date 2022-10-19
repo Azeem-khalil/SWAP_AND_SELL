@@ -15,7 +15,7 @@ const StackNavigation = () => {
   return (
     <Stack.Navigator
       initialRouteName="Home"
-      screenOptions={{ headerShow: () => false }}>
+      screenOptions={{ headerShown: true }}>
       <Stack.Screen
         options={{ headerShown: false }}
         name={'Home'}
@@ -28,7 +28,7 @@ const StackNavigation = () => {
       />
       <Stack.Screen name={'ProductView'} component={ProductView} />
       <Stack.Screen
-        options={{ headerShown: false }}
+        options={{ headerShown: true }}
         name={'Shose'}
         component={Shose}
       />
