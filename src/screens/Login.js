@@ -164,7 +164,7 @@
 // });
 
 import { View } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Text,
@@ -178,10 +178,33 @@ import {
   Center,
   NativeBaseProvider,
 } from 'native-base';
-import { addDoc, collection } from 'firebase/firestore';
 import { db } from '../Component/DataBase/firebase';
+import { addDoc, collection } from 'firebase/firestore';
 
 function Login({ navigation }) {
+  const [routing, setRouting] = useState(false);
+  async function Addproduct() {
+    console.log('press Button: ');
+
+    try {
+      const docRef = await addDoc(collection(db, 'shoes'), {
+        name: 'men shoes PNG7492',
+        image:
+          'https://www.freepnglogos.com/uploads/shoes-png/shoes-shoe-png-transparent-shoe-images-pluspng-17.png',
+        description:
+          'You can use shoes, shoe png transparent shoe images high-quality image to inspire your logo work and create more beautiful logos. You can also use them on websites, magazines, prints, presentations, graphics and video work',
+        price: 77,
+        size: 10,
+        condition: 5,
+        countInStock: 12,
+        rating: 4.6,
+        numReview: 4,
+      });
+      console.log('Document written with ID: ', docRef.id);
+    } catch (e) {
+      console.error('Error adding document: ', e);
+    }
+  }
   return (
     <Center flex={1} px="3">
       <Center w="100%">
@@ -227,6 +250,7 @@ function Login({ navigation }) {
             </FormControl>
             <Button
               onPress={() => navigation.navigate('Mainnavigation')}
+              //onPress={Addproduct}
               mt="2"
               colorScheme="indigo">
               Sign in

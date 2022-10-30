@@ -19,6 +19,8 @@ target 'SWAP_AND_SELL' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
+  pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
+
   target 'SWAP_AND_SELLTests' do
     inherit! :complete
     # Pods for testing

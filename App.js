@@ -7,13 +7,13 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './src/screens/Login';
 import Signup from './src/screens/Signup';
 
-import BottomNav from './src/Component/Navigation/BottomNav';
 import { firebase, db, auth } from './src/Component/DataBase/firebase';
 import { getAuth } from 'firebase/auth';
 import Product from './src/Component/data/Product';
-import Home from './src/screens/Home';
+
 import MainPage from './src/mainScreens/MainPage';
 import Mainnavigation from './src/Component/Navigation/Mainnavigation';
+import Home from './src/screens/Bookswapscreen/Home';
 // console.log(auth);
 const Stack = createNativeStackNavigator();
 export default function App() {

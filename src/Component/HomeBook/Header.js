@@ -1,12 +1,11 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { NativeBaseProvider, Box, HStack, Input } from 'native-base';
-import Ionicons from 'react-native-vector-icons/FontAwesome5';
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
-
+import Ionicons from 'react-native-vector-icons/Octicons';
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
 
-const CustomHeader = () => {
+const Header = () => {
   const navigation = useNavigation();
   return (
     <Box>
@@ -32,8 +31,10 @@ const CustomHeader = () => {
             <EvilIcons style={{ marginLeft: 5 }} size={30} name="search" />
           }
         />
-        <Pressable ml={3} onPress={() => navigation.navigate('Cart')}>
-          <Ionicons name="shopping-basket" color={'#ffffff'} size={24} />
+        <Pressable
+          ml={3} //onPress={() => navigation.navigate('Cart')}
+        >
+          <Ionicons name="heart" color={'#ffffff'} size={24} />
           <Box
             px={1}
             rounded={'full'}
@@ -50,6 +51,6 @@ const CustomHeader = () => {
   );
 };
 
-export default CustomHeader;
+export default Header;
 
 const styles = StyleSheet.create({});

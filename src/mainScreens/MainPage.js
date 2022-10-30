@@ -8,28 +8,32 @@ import { async } from '@firebase/util';
 const MainPage = () => {
   const navigation = useNavigation();
   function addData() {
-    console.log('doc name ' + firebase.name);
-    // setDoc(doc(db, 'books', 'LA'), {
-    //   name: 'Los Angeles',
-    //   state: 'CA',
-    //   country: 'USA',
-    // });
+    console.log('doc name ' + db.app);
+    setDoc(doc(db, 'books', 'LA'), {
+      name: 'Los Angeles',
+      state: 'CA',
+      country: 'USA',
+    });
 
-    async function _delete() {
-      await deleteDoc(doc(db, 'books', 'ai2HGbouAFmdalgPZHIg'));
-    }
-    _delete();
+    //async function _delete() {
+    // await deleteDoc(doc(db, 'books', 'ai2HGbouAFmdalgPZHIg'));
+    // }
+    //_delete();
     console.log('datadta');
   }
   return (
-    <Box alignItems="center">
+    <Box
+      style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+      bg={'#f8f8ff'}>
       <Box bgColor={'#fb923c'} w="full" alignItems="center">
         <Heading mt={10} fontSize={40} color="white" fontStyle={'italic'}>
           SWAP & SeLL
         </Heading>
       </Box>
 
-      <TouchableOpacity onPress={() => navigation.navigate('BottomNav')}>
+      <TouchableOpacity
+        style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+        onPress={() => navigation.navigate('BottomNavShoes')}>
         <Image
           mt={10}
           rounded={'md'}
@@ -42,7 +46,9 @@ const MainPage = () => {
           resizeMode="contain"
         />
       </TouchableOpacity>
-      <TouchableOpacity onPress={addData}>
+      <TouchableOpacity
+        style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+        onPress={() => navigation.navigate('BottomNavBook')}>
         <Image
           mt={10}
           rounded={'md'}

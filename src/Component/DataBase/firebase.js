@@ -1,44 +1,22 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
-// import Product from '../data/Product';
-
-// import * as firebase from 'firebase';
-// import '@firebase/auth';
-// import '@firebase/firestore';
-require('firebase/auth');
-
-//import { getAnalytics } from 'firebase/analytics';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-
 const firebaseConfig = {
-  apiKey: 'AIzaSyAroysVfwB_bSNtSDwdmGUdT52tEibxcn0',
-  authDomain: 'swap-and-sell-34831.firebaseapp.com',
-  projectId: 'swap-and-sell-34831',
-  storageBucket: 'swap-and-sell-34831.appspot.com',
-  messagingSenderId: '871388491550',
-  appId: '1:871388491550:web:76cbc090b0f625084be30f',
-  measurementId: 'G-XS5XWHE1QS',
+  apiKey: 'AIzaSyBHKqax2m_lB4DZnoP_WBfsWER2QIgFL3c',
+  authDomain: 'database-a86a6.firebaseapp.com',
+  projectId: 'database-a86a6',
+  storageBucket: 'database-a86a6.appspot.com',
+  messagingSenderId: '130957528820',
+  appId: '1:130957528820:web:67a1dbef4bb2415e9bd8a1',
 };
 
 // Initialize Firebase
-
-// if (!firebase.apps.length) {
-//   firebase.initializeApp(firebaseConfig);
-// }
-
-export const firebase = initializeApp(firebaseConfig);
-export const db = getFirestore(firebase);
-console.log('firebase name ' + db.name);
-export const auth = getAuth(firebase);
-//const analytics = getAnalytics(firebase);
-//firebase.initializeApp(firebaseConfig);
-//const app = initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
+export const db = getFirestore(app);
 
 // async function fun() {
 //   // for (let i = 0; i < Product.length; i++)

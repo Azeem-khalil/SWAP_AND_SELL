@@ -54,8 +54,8 @@ const WriteReview = () => {
             h={20}
             w="full"
             placeholder="Add your Comment......."
-            borderWidth={0}
-            borderColor={'#f5f5f5'}
+            //borderWidth={0}
+            //borderColor={'#f5f5f5'}
             py={4}
             _focus={{ bg: '#f5f5f5' }}
           />
@@ -65,9 +65,9 @@ const WriteReview = () => {
             mt={3}
             mb={5}
             rounded={'full'}
-            bg={'#000000'}
+            bg={'#5b21b6'}
             _text={{ color: '#ffffff', fontWeight: 'bold' }}
-            _pressed={{ bg: '#f5f5f5' }}>
+            _pressed={{ bg: '#a78bfa' }}>
             Submit
           </Button>
         </FormControl>
