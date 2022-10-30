@@ -41,7 +41,7 @@ const Product = [
     price: 77,
     countInStock: 12,
     rating: 2,
-    numReview: 4,
+    numReview: 2,
   },
   {
     _id: '4',
