@@ -31,7 +31,7 @@ export default function App() {
           setAuthUser(null);
           console.log('out use ');
 
-          // User is signed out
+          // User is signed ou
           // ...
         }
       });
