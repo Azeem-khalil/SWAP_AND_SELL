@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Text, View } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import Content from './Content';
 import { Box } from 'native-base';

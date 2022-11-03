@@ -2,11 +2,45 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import UploadImage from '../Component/UploadImage';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Fab, Heading } from 'native-base';
+import { Box, Button, Fab, Heading, useToast } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
+import { signOut } from 'firebase/auth';
+import { auth } from '../Component/DataBase/firebase';
 
 export default function Profile() {
   const navigation = useNavigation();
+  const toast = useToast();
+
+  function signout() {
+    signOut(auth)
+      .then(() => {
+        toast.show({
+          render: () => {
+            return (
+              <Box bg="emerald.500" px="2" py="1" rounded="sm" mb={5}>
+                successfully Logout
+              </Box>
+            );
+          },
+        });
+        navigation.navigate('Login');
+      })
+      .catch(error => {
+        toast.show({
+          render: () => {
+            return (
+              <Box bg="emerald.500" px="2" py="1" rounded="sm" mb={5}>
+                {error.message}
+              </Box>
+            );
+          },
+        });
+      });
+  }
+  // useEffect(() => {
+  //   signOut();
+  // }, []);
+
   return (
     <View>
       <View style={styles.container}>
@@ -45,6 +79,21 @@ export default function Profile() {
           </Text>
         </View>
       </View>
+      <Button
+        _text={{
+          color: '#ffffff',
+          fontWeight: 'medium',
+          fontSize: 'sm',
+        }}
+        w={'25%'}
+        h={'7%'}
+        ml={5}
+        mt={7}
+        bgColor="#7e22ce"
+        colorScheme="indigo"
+        onPress={signout}>
+        Logout
+      </Button>
     </View>
   );
 }
