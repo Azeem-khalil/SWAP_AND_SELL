@@ -157,7 +157,7 @@
 //           style={styles.inputStyle}
 //           placeholder="Name"
 //           value={this.state.displayName}
-//           onChangeText={val => this.updateInputVal(val, 'displayName')}
+//           onChangeText={val => this. (val, 'displayName')}
 //         />
 //         <TextInput
 //           style={styles.inputStyle}
@@ -221,8 +221,6 @@
 //   },
 // });
 
-import { View } from 'react-native';
-
 import {
   Box,
   Heading,
@@ -231,12 +229,83 @@ import {
   Input,
   Button,
   Center,
-  NativeBaseProvider,
+  useToast,
 } from 'native-base';
 
-import React from 'react';
-
+import React, { useState } from 'react';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { auth } from '../Component/DataBase/firebase';
 const Signup = ({ navigation }) => {
+  const toast = useToast();
+  const [name, setname] = useState('');
+  const [email, setemail] = useState('');
+  const [pass, setpass] = useState('');
+  const [conformPass, setconformPass] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
+  const [submitButtonDisabled, setSubmitButtonDisabled] = useState(false);
+
+  const handleSubmission = () => {
+    console.log('start');
+    console.log(name);
+    if (!name || !email || !pass) {
+      setErrorMsg('Fill all fields');
+      toast.show({
+        render: () => {
+          return (
+            <Box bg="emerald.500" px="2" py="1" rounded="sm" mb={5}>
+              Fill all fields
+            </Box>
+          );
+        },
+      });
+      return;
+    }
+    if (pass !== conformPass) {
+      setErrorMsg('passowrd and confirom password are note match');
+      toast.show({
+        render: () => {
+          return (
+            <Box bg="emerald.500" px="2" py="1" rounded="sm" mb={5}>
+              passowrd and confirom password are note match
+            </Box>
+          );
+        },
+      });
+      return;
+    }
+    //console.log(errorMsg);
+
+    setErrorMsg('');
+    console.log('bfr');
+    console.log(name);
+
+    setSubmitButtonDisabled(true);
+    createUserWithEmailAndPassword(auth, email, pass)
+      .then(async userCredential => {
+        setSubmitButtonDisabled(false);
+        const user = userCredential.user;
+        await updateProfile(user, {
+          displayName: name,
+        });
+
+        navigation.navigate('Login');
+      })
+      .catch(err => {
+        setSubmitButtonDisabled(false);
+        toast.show({
+          render: () => {
+            return (
+              <Box bg="emerald.500" px="2" py="1" rounded="sm" mb={5}>
+                {err.message}
+              </Box>
+            );
+          },
+        });
+        console.log('log error ' + err.message);
+        setErrorMsg(err.message);
+      });
+  };
+
   return (
     <Center flex={1} px="3">
       <Center w="100%">
@@ -262,21 +331,48 @@ const Signup = ({ navigation }) => {
           </Heading>
           <VStack space={3} mt="5">
             <FormControl>
+              <FormControl.Label>Name</FormControl.Label>
+              <Input
+                isRequire
+                onChangeText={TEXT => {
+                  setname(TEXT);
+                }}
+              />
+            </FormControl>
+            <FormControl>
               <FormControl.Label>Email</FormControl.Label>
-              <Input />
+              <Input
+                isRequire
+                onChangeText={TEXT => {
+                  setemail(TEXT);
+                }}
+              />
             </FormControl>
             <FormControl>
               <FormControl.Label>Password</FormControl.Label>
-              <Input type="password" />
+              <Input
+                type="password"
+                isRequire
+                onChangeText={TEXT => {
+                  setconformPass(TEXT);
+                }}
+              />
             </FormControl>
             <FormControl>
               <FormControl.Label>Confirm Password</FormControl.Label>
-              <Input type="password" />
+              <Input
+                type="password"
+                isRequire
+                onChangeText={TEXT => {
+                  setpass(TEXT);
+                }}
+              />
             </FormControl>
             <Button
-              onPress={() => navigation.navigate('Login')}
+              onPress={handleSubmission}
               mt="2"
-              colorScheme="indigo">
+              colorScheme="indigo"
+              isDisabled={submitButtonDisabled}>
               Sign up
             </Button>
           </VStack>

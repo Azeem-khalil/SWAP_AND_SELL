@@ -7,64 +7,65 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './src/screens/Login';
 import Signup from './src/screens/Signup';
 
-import { firebase, db, auth } from './src/Component/DataBase/firebase';
-import { getAuth } from 'firebase/auth';
-import Product from './src/Component/data/Product';
+import { onAuthStateChanged } from 'firebase/auth';
 
-import MainPage from './src/mainScreens/MainPage';
 import Mainnavigation from './src/Component/Navigation/Mainnavigation';
-import Home from './src/screens/Bookswapscreen/Home';
+import { auth } from './src/Component/DataBase/firebase';
+import { useEffect } from 'react';
+import { useState } from 'react';
 // console.log(auth);
 const Stack = createNativeStackNavigator();
 export default function App() {
-  const [loading, setLoading] = React.useState(true);
-  const [user, setUser] = React.useState(null);
-  // React.useEffect(() => {
-  //   const usersRef = firebase.firestore().collection('users');
-  //   auth.onAuthStateChanged(user => {
-  //     if (user) {
-  //       usersRef
-  //         .doc(user.uid)
-  //         .get()
-  //         .then(document => {
-  //           const userData = document.data();
-  //           setLoading(false);
-  //           setUser(userData);
-  //         })
-  //         .catch(error => {
-  //           setLoading(false);
-  //         });
-  //     } else {
-  //       setLoading(false);
-  //     }
-  //   });
-  // }, []);
+  const [Authuser, setAuthUser] = useState(null);
+  useEffect(() => {
+    const userToken = async () => {
+      await onAuthStateChanged(auth, user => {
+        if (user) {
+          // User is signed in, see docs for a list of available properties
+          // https://firebase.google.com/docs/reference/js/firebase.User
+          const uid = user.uid;
+          setAuthUser(uid);
+          console.log('in use ' + uid);
+          // ...
+        } else {
+          setAuthUser(null);
+          console.log('out use ');
 
-  // if (loading) {
-  //   return <></>;
-  // }
+          // User is signed out
+          // ...
+        }
+      });
+    };
+  }, []);
+
   return (
     <NavigationContainer>
       <NativeBaseProvider>
         <StatusBar hidden={false} />
+
         <Stack.Navigator
-          initialRouteName="Login"
+          //initialRouteName="Login"
           screenOptions={{ headerShown: false }}>
-          <Stack.Screen
-            options={{ headerShown: false }}
-            name={'Login'}
-            component={Login}
-          />
-          <Stack.Screen
-            options={{ headerShown: false }}
-            name={'Signup'}
-            component={Signup}
-          />
-          <Stack.Screen
-            options={{ headerShown: false }}
-            name={'Mainnavigation'}
-            component={Mainnavigation}
-          />
+          {!Authuser ? (
+            <>
+              <Stack.Screen
+                options={{ headerShown: false }}
+                name={'Login'}
+                component={Login}
+              />
+              <Stack.Screen
+                options={{ headerShown: false }}
+                name={'Signup'}
+                component={Signup}
+              />
+            </>
+          ) : (
+            <Stack.Screen
+              options={{ headerShown: false }}
+              name={'Mainnavigation'}
+              component={Mainnavigation}
+            />
+          )}
         </Stack.Navigator>
       </NativeBaseProvider>
     </NavigationContainer>

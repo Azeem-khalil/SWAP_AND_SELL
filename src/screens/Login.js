@@ -176,27 +176,36 @@ import {
   Button,
   HStack,
   Center,
-  NativeBaseProvider,
+  useToast,
 } from 'native-base';
-import { db } from '../Component/DataBase/firebase';
-import { addDoc, collection } from 'firebase/firestore';
-
+import { db, auth } from '../Component/DataBase/firebase';
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  updateProfile,
+  signInWithEmailAndPassword,
+} from 'firebase/auth';
+import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
 function Login({ navigation }) {
-  const [routing, setRouting] = useState(false);
   async function Addproduct() {
     console.log('press Button: ');
-
     try {
       const docRef = await addDoc(collection(db, 'shoes'), {
         name: 'men shoes PNG7492',
-        image:
+        image1:
           'https://www.freepnglogos.com/uploads/shoes-png/shoes-shoe-png-transparent-shoe-images-pluspng-17.png',
+        image2:
+          'https://www.freepnglogos.com/uploads/shoes-png/shoes-shoe-png-transparent-shoe-images-pluspng-17.png',
+        image3:
+          'https://www.freepnglogos.com/uploads/shoes-png/shoes-shoe-png-transparent-shoe-images-pluspng-17.png',
+
         description:
           'You can use shoes, shoe png transparent shoe images high-quality image to inspire your logo work and create more beautiful logos. You can also use them on websites, magazines, prints, presentations, graphics and video work',
         price: 77,
         size: 10,
         condition: 5,
         countInStock: 12,
+        category: 'men',
         rating: 4.6,
         numReview: 4,
       });
@@ -205,6 +214,74 @@ function Login({ navigation }) {
       console.error('Error adding document: ', e);
     }
   }
+  async function Getproduct() {
+    console.log('press Button: ');
+    try {
+      const q = query(
+        collection(db, 'shoes'),
+        where('category', '==', 'women'),
+      );
+
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach(doc => {
+        // doc.data() is never undefined for query doc snapshots
+        console.log(doc.id, ' => ', doc.data());
+      });
+    } catch (e) {
+      console.error('Error adding document: ', e);
+    }
+  }
+
+  const toast = useToast();
+
+  const [email, setemail] = useState('');
+  const [pass, setpass] = useState('');
+
+  const [errorMsg, setErrorMsg] = useState('');
+  const [submitButtonDisabled, setSubmitButtonDisabled] = useState(false);
+
+  const handleSubmission = () => {
+    console.log('start');
+
+    if (!email || !pass) {
+      setErrorMsg('Fill all fields');
+      toast.show({
+        render: () => {
+          return (
+            <Box bg="emerald.500" px="2" py="1" rounded="sm" mb={5}>
+              Fill all fields
+            </Box>
+          );
+        },
+      });
+      return;
+    }
+
+    //console.log(errorMsg);
+
+    setSubmitButtonDisabled(true);
+    signInWithEmailAndPassword(auth, email, pass)
+      .then(userCredential => {
+        setSubmitButtonDisabled(false);
+        const user = userCredential.user.uid;
+        console.log(user);
+        navigation.navigate('Mainnavigation');
+      })
+      .catch(err => {
+        setSubmitButtonDisabled(false);
+        toast.show({
+          render: () => {
+            return (
+              <Box bg="emerald.500" px="2" py="1" rounded="sm" mb={5}>
+                {err.message}
+              </Box>
+            );
+          },
+        });
+        console.log('log error ' + err.message);
+      });
+  };
+
   return (
     <Center flex={1} px="3">
       <Center w="100%">
@@ -232,11 +309,22 @@ function Login({ navigation }) {
           <VStack space={3} mt="5">
             <FormControl>
               <FormControl.Label>Email ID</FormControl.Label>
-              <Input />
+              <Input
+                isRequire
+                onChangeText={TEXT => {
+                  setemail(TEXT);
+                }}
+              />
             </FormControl>
             <FormControl>
               <FormControl.Label>Password</FormControl.Label>
-              <Input type="password" />
+              <Input
+                type="password"
+                isRequire
+                onChangeText={TEXT => {
+                  setpass(TEXT);
+                }}
+              />
               <Link
                 _text={{
                   fontSize: 'xs',
@@ -249,8 +337,8 @@ function Login({ navigation }) {
               </Link>
             </FormControl>
             <Button
-              onPress={() => navigation.navigate('Mainnavigation')}
-              //onPress={Addproduct}
+              //onPress={() => navigation.navigate('Mainnavigation')}
+              onPress={handleSubmission}
               mt="2"
               colorScheme="indigo">
               Sign in

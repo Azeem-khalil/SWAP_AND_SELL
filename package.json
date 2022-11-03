@@ -20,7 +20,7 @@
     "native-base": "^3.4.15",
     "react": "17.0.2",
     "react-hook-form": "^7.38.0",
-    "react-native": "0.68.2",
+    "react-native": "^0.68.2",
     "react-native-gesture-handler": "^2.5.0",
     "react-native-image-picker": "^4.10.0",
     "react-native-numeric-input": "^1.9.1",
@@ -34,7 +34,8 @@
     "react-native-swipe-list-view": "^3.2.9",
     "react-native-tab-view": "^3.3.0",
     "react-native-vector-icons": "^9.2.0",
-    "react-native-web-swiper": "^2.2.4"
+    "react-native-web-swiper": "^2.2.4",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@babel/core": "7.18.5",
