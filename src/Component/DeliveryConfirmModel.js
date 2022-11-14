@@ -17,24 +17,20 @@ const DeliveryConfirmModel = () => {
   const [showModal, setShowModal] = useState(false);
   const [showModal2, setShowModal2] = useState(false);
   return (
-    <Box>
+    <>
       <Center alignItems={'center'}>
         <Button
-          w={'75%'}
-          h={60}
-          mt={3}
-          mb={15}
-          fontSize={50}
-          rounded={'full'}
-          bg={'#000000'}
           _text={{
-            color: '#ffffff',
-            fontWeight: 'bold',
-            alignContent: 'center',
+            color: '#000000',
+            fontWeight: 'medium',
+            fontSize: 'sm',
           }}
-          _pressed={{ bg: '##000000' }}
+          mt={3}
+          bgColor="#d8b4fe"
+          colorScheme="indigo"
+          p={3}
           onPress={() => setShowModal(true)}>
-          Total
+          Confirm Order
         </Button>
       </Center>
 
@@ -96,7 +92,7 @@ const DeliveryConfirmModel = () => {
           </Modal.Footer>
         </Modal.Content>
       </Modal>
-    </Box>
+    </>
   );
 };
 export default DeliveryConfirmModel;

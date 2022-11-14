@@ -2,11 +2,37 @@ import React from 'react';
 import { Box, Heading, Image } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native';
-import { addDoc, deleteDoc, doc, setDoc } from 'firebase/firestore';
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  query,
+  setDoc,
+  where,
+} from 'firebase/firestore';
 import { db, firebase } from '../Component/DataBase/firebase';
 import { async } from '@firebase/util';
 const MainPage = () => {
   const navigation = useNavigation();
+  async function Getproduct() {
+    console.log('press Button: ');
+    try {
+      const q = query(
+        collection(db, 'shoes'),
+        where('category', '==', 'women'),
+      );
+
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach(doc => {
+        // doc.data() is never undefined for query doc snapshots
+        console.log(doc.id, ' => ', doc.data());
+      });
+    } catch (e) {
+      console.error('Error adding document: ', e);
+    }
+  }
   function addData() {
     console.log('doc name ' + db.app);
     setDoc(doc(db, 'books', 'LA'), {
@@ -33,6 +59,7 @@ const MainPage = () => {
 
       <TouchableOpacity
         style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+        //onPress={Getproduct}
         onPress={() => navigation.navigate('BottomNavShoes')}>
         <Image
           mt={10}

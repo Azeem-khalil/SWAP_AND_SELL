@@ -12,16 +12,17 @@ const EmptyCart = () => {
         <Text bold fontSize={21} mt={3}>
           Cart is Empty
         </Text>
-        <Button
+        {/* <Button
           h={'8%'}
           w={'80%'}
           mt={70}
           rounded={'full'}
           bg={'#000000'}
+          onPress={() => navigation.navigate('ProductView', product, index)}
           _text={{ color: '#ffffff', fontWeight: 'bold' }}
           _pressed={{ bg: '#dcdcdc' }}>
           Start Shopping
-        </Button>
+        </Button> */}
       </Center>
     </Box>
   );

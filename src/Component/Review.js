@@ -15,7 +15,7 @@ const Review = props => {
   return (
     <Box my={9} flex={1}>
       <Heading bold fontSize={15} mb={2}>
-        Review
+        Total Review {props.numReview}
       </Heading>
       <Box p={3} bg={'#f5f5f5'} mt={5} rounded={5} flex={1}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
