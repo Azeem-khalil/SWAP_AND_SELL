@@ -10,6 +10,7 @@ import {
   Button,
   TextArea,
   ScrollView,
+  useToast,
 } from 'native-base';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import {
@@ -22,9 +23,15 @@ import {
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { auth, db } from '../../Component/DataBase/firebase';
+import { addDoc, collection } from 'firebase/firestore';
 const Addproduct = () => {
   const [cameraPhoto, setCameraPhoto] = useState();
   const [galleryPhoto, setGalleryPhoto] = useState();
+  const [checkAddBookAd, setcheckAddBookAd] = useState(true);
+  const toast = useToast();
+  const user = auth.currentUser;
+
   const [formData, setData] = React.useState({});
   const [errors, setErrors] = React.useState({});
 
@@ -65,9 +72,51 @@ const Addproduct = () => {
 
     return true;
   };
-
+  async function AddtoBookAd() {
+    if (
+      checkAddBookAd &&
+      (!formData.BookName == '' ||
+        !formData.description == '' ||
+        !formData.need == '' ||
+        !formData.PhoneNumber == '' ||
+        !formData.location == '')
+    ) {
+      setcheckAddBookAd(false);
+      const docRef = await addDoc(collection(db, 'BooksAds'), {
+        userName: user.displayName,
+        uid: user.uid,
+        BookName: formData.BookName,
+        description: formData.description,
+        need: formData.need,
+        PhoneNumber: formData.PhoneNumber,
+        image:
+          'https://images.unsplash.com/photo-1541963463532-d68292c34b19?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80',
+        location: formData.location,
+        rating: 2,
+        numReview: 6,
+        //addfav: true,
+      });
+      setcheckAddBookAd(true);
+      // navigation.navigate('Cart');
+    } else {
+      toast.show({
+        render: () => {
+          return (
+            <Box bg="emerald.500" px="2" py="1" rounded="sm" mb={5}>
+              Before add Book Ad Please select quantity
+            </Box>
+          );
+        },
+      });
+      return;
+    }
+  }
   const onSubmit = () => {
-    validate() ? console.log('Submitted') : console.log('Validation Failed');
+    console.log('formData ', formData);
+    //validate() ? console.log('Submitted') : console.log('Validation Failed');
+    {
+      AddtoBookAd();
+    }
   };
 
   return (
@@ -76,7 +125,7 @@ const Addproduct = () => {
         <Box safeArea p="2" py="8" w="90%" maxW="290">
           <ScrollView showsVerticalScrollIndicator={false}>
             <Heading>POST YOUR AD</Heading>
-            <FormControl isRequired isInvalid={'Book Name' in errors}>
+            <FormControl isRequired isInvalid={'BookName' in errors}>
               <FormControl.Label
                 _text={{
                   bold: true,
@@ -85,7 +134,9 @@ const Addproduct = () => {
               </FormControl.Label>
               <Input
                 placeholder="Book..."
-                onChangeText={value => setData({ ...formData, name: value })}
+                onChangeText={value =>
+                  setData({ ...formData, BookName: value })
+                }
                 InputLeftElement={
                   <FontAwesome
                     style={{ marginLeft: 5 }}
@@ -94,7 +145,7 @@ const Addproduct = () => {
                   />
                 }
               />
-              {' Book Name' in errors ? (
+              {' BookName' in errors ? (
                 <FormControl.ErrorMessage>Error</FormControl.ErrorMessage>
               ) : (
                 <FormControl.HelperText>
@@ -102,7 +153,7 @@ const Addproduct = () => {
                 </FormControl.HelperText>
               )}
             </FormControl>
-            <FormControl isRequired isInvalid={'Last Name' in errors}>
+            <FormControl isRequired isInvalid={'description' in errors}>
               <FormControl.Label
                 _text={{
                   bold: true,
@@ -117,11 +168,13 @@ const Addproduct = () => {
                 // borderColor={'#000000'}
                 //bgColor={'#000000'}
                 py={4}
-                onChangeText={value => setData({ ...formData, name: value })}
+                onChangeText={value =>
+                  setData({ ...formData, description: value })
+                }
                 _focus={{ bg: '#f5f5f5' }}
               />
 
-              {'Last Name' in errors ? (
+              {'description' in errors ? (
                 <FormControl.ErrorMessage>Error</FormControl.ErrorMessage>
               ) : (
                 <FormControl.HelperText>
@@ -129,16 +182,45 @@ const Addproduct = () => {
                 </FormControl.HelperText>
               )}
             </FormControl>
-            <FormControl isRequired isInvalid={'Phone Number' in errors}>
+            <FormControl isRequired isInvalid={'need' in errors}>
               <FormControl.Label
                 _text={{
                   bold: true,
                 }}>
-                Phone Number
+                your need
+              </FormControl.Label>
+              <TextArea
+                h={20}
+                w="full"
+                placeholder="Add your need......."
+                //borderWidth={1}
+                // borderColor={'#000000'}
+                //bgColor={'#000000'}
+                py={4}
+                onChangeText={value => setData({ ...formData, need: value })}
+                _focus={{ bg: '#f5f5f5' }}
+              />
+
+              {'need' in errors ? (
+                <FormControl.ErrorMessage>Error</FormControl.ErrorMessage>
+              ) : (
+                <FormControl.HelperText>
+                  need should contain atleast 3 character.
+                </FormControl.HelperText>
+              )}
+            </FormControl>
+            <FormControl isRequired isInvalid={'location' in errors}>
+              <FormControl.Label
+                _text={{
+                  bold: true,
+                }}>
+                location
               </FormControl.Label>
               <Input
-                placeholder="03230115794"
-                onChangeText={value => setData({ ...formData, name: value })}
+                placeholder="location... "
+                onChangeText={value =>
+                  setData({ ...formData, location: value })
+                }
                 InputLeftElement={
                   <FontAwesome
                     style={{ marginLeft: 5 }}
@@ -147,7 +229,35 @@ const Addproduct = () => {
                   />
                 }
               />
-              {'Phone Number' in errors ? (
+              {'location' in errors ? (
+                <FormControl.ErrorMessage>Error</FormControl.ErrorMessage>
+              ) : (
+                <FormControl.HelperText>
+                  location should contain atleast 3 character.
+                </FormControl.HelperText>
+              )}
+            </FormControl>
+            <FormControl isRequired isInvalid={'PhoneNumber' in errors}>
+              <FormControl.Label
+                _text={{
+                  bold: true,
+                }}>
+                PhoneNumber
+              </FormControl.Label>
+              <Input
+                placeholder="PhoneNumber..."
+                onChangeText={value =>
+                  setData({ ...formData, PhoneNumber: value })
+                }
+                InputLeftElement={
+                  <FontAwesome
+                    style={{ marginLeft: 5 }}
+                    size={20}
+                    name="phone"
+                  />
+                }
+              />
+              {'PhoneNumber' in errors ? (
                 <FormControl.ErrorMessage>Error</FormControl.ErrorMessage>
               ) : (
                 <FormControl.HelperText>
@@ -158,6 +268,7 @@ const Addproduct = () => {
             <TouchableOpacity onPress={openGallery} style={styles.button}>
               <Text style={styles.buttonText}>Open Gallery</Text>
             </TouchableOpacity>
+            {console.log('galleryPhoto' + galleryPhoto)}
             {<Image style={styles.imageStyle} source={{ uri: galleryPhoto }} />}
 
             <Button onPress={onSubmit} mt="5" colorScheme="cyan">

@@ -78,13 +78,13 @@ const WriteReview = props => {
     // Set the "capital" field of the city 'DC'
     await updateDoc(Ref, {
       numReview: 1 + product.numReview,
-      rating:
-        (product.star1Review +
-          product.star2Review * 2 +
-          product.star3Review * 3 +
-          product.star4Review * 4 +
-          product.star5Review * 5) /
-        (1 + product.numReview), //WRk
+      // rating:
+      //   (product.star1Review +
+      //     product.star2Review * 2 +
+      //     product.star3Review * 3 +
+      //     product.star4Review * 4 +
+      //     product.star5Review * 5) /
+      //   (1 + product.numReview), //WRk
     });
   }
   async function addproductReview() {

@@ -8,7 +8,9 @@ import {
   ScrollView,
   Heading,
 } from 'native-base';
-import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
+import Fontisto from 'react-native-vector-icons/Fontisto';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 function Edit_Profile() {
   const [formData, setData] = React.useState({});
@@ -40,17 +42,13 @@ function Edit_Profile() {
             _text={{
               bold: true,
             }}>
-            First Name
+            Name
           </FormControl.Label>
           <Input
             placeholder="Azeem..."
             onChangeText={value => setData({ ...formData, name: value })}
             InputLeftElement={
-              <FontAwesome5Icon
-                style={{ marginLeft: 5 }}
-                size={20}
-                name="name"
-              />
+              <Fontisto style={{ marginLeft: 5 }} size={20} name="person" />
             }
           />
           {'name' in errors ? (
@@ -62,25 +60,6 @@ function Edit_Profile() {
           )}
         </FormControl>
 
-        <FormControl isRequired isInvalid={'Last Name' in errors}>
-          <FormControl.Label
-            _text={{
-              bold: true,
-            }}>
-            Last Name
-          </FormControl.Label>
-          <Input
-            placeholder="khalil.."
-            onChangeText={value => setData({ ...formData, name: value })}
-          />
-          {'Last Name' in errors ? (
-            <FormControl.ErrorMessage>Error</FormControl.ErrorMessage>
-          ) : (
-            <FormControl.HelperText>
-              Last Name should contain atleast 3 character.
-            </FormControl.HelperText>
-          )}
-        </FormControl>
         <FormControl isRequired isInvalid={'Phone Number' in errors}>
           <FormControl.Label
             _text={{
@@ -91,6 +70,9 @@ function Edit_Profile() {
           <Input
             placeholder="03230115794"
             onChangeText={value => setData({ ...formData, name: value })}
+            InputLeftElement={
+              <FontAwesome style={{ marginLeft: 5 }} size={20} name="phone" />
+            }
           />
           {'Phone Number' in errors ? (
             <FormControl.ErrorMessage>Error</FormControl.ErrorMessage>
@@ -100,25 +82,7 @@ function Edit_Profile() {
             </FormControl.HelperText>
           )}
         </FormControl>
-        <FormControl isRequired isInvalid={'Email' in errors}>
-          <FormControl.Label
-            _text={{
-              bold: true,
-            }}>
-            Email
-          </FormControl.Label>
-          <Input
-            placeholder="zazeem321@gmail.com"
-            onChangeText={value => setData({ ...formData, name: value })}
-          />
-          {'Email' in errors ? (
-            <FormControl.ErrorMessage>Error</FormControl.ErrorMessage>
-          ) : (
-            <FormControl.HelperText>
-              Email should contain atleast 3 character.
-            </FormControl.HelperText>
-          )}
-        </FormControl>
+
         <FormControl isRequired isInvalid={'Address' in errors}>
           <FormControl.Label
             _text={{
@@ -129,6 +93,13 @@ function Edit_Profile() {
           <Input
             placeholder="Address..."
             onChangeText={value => setData({ ...formData, name: value })}
+            InputLeftElement={
+              <FontAwesome
+                style={{ marginLeft: 5 }}
+                size={20}
+                name="address-card"
+              />
+            }
           />
           {'Address' in errors ? (
             <FormControl.ErrorMessage>Error</FormControl.ErrorMessage>

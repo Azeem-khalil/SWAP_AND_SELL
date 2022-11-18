@@ -20,18 +20,31 @@ import { SwipeListView } from 'react-native-swipe-list-view';
 import DeliveryConfirmModel from './DeliveryConfirmModel';
 import { deleteDoc, doc } from 'firebase/firestore';
 import { db } from './DataBase/firebase';
+import { useNavigation } from '@react-navigation/native';
 
-export default function CartItem(props) {
+export default function FavouritIteme(props) {
+  const navigation = useNavigation();
   const { isOpen, onOpen, onClose } = useDisclose();
-  const Total = props.Total;
+  //const Total = props.Total;
 
   async function deleteCartProduct(rowMap, rowKey) {
     console.log('key: ' + rowKey);
-    await deleteDoc(doc(db, 'cart', rowKey));
+    await deleteDoc(doc(db, 'favorite', rowKey));
   }
 
   const renderItem = data => (
-    <Pressable>
+    <Pressable
+      onLongPress={() => navigation.navigate('SingleProductView', data.item)}
+      // onPress={() => {
+      //   const BookData = [];
+      //   BookData.push({
+      //     ...data.item,
+      //     addfav: false,
+      //   });
+
+      //   navigation.navigate('SingleProductView', BookData);
+      // }}
+    >
       <Box mb={3}>
         <HStack
           alignItems={'center'}
@@ -42,24 +55,19 @@ export default function CartItem(props) {
           <Center w="30%" bg={'#dcdcdc'}>
             <Image
               source={{ uri: data.item.image }}
-              alt={data.item.productName}
+              alt={data.item.BookName}
               w="full"
               h="24"
             />
           </Center>
           <VStack w={'60%'} px={2} space={2}>
             <Text ml={2} isTruncated bold color={'#000000'} fontSize={15}>
-              {data.item.productName}
+              {data.item.BookName}
             </Text>
             <Text bold ml={4} fontSize={17} color={'#696969'}>
-              ${data.item.totalprice}
+              {/* ${data.item.totalprice} */}
             </Text>
           </VStack>
-          <Center>
-            <Button bg={'#000000'} disabled _text={{ color: '#ffffff' }}>
-              {data.item.quantity}
-            </Button>
-          </Center>
         </HStack>
       </Box>
     </Pressable>
@@ -88,7 +96,7 @@ export default function CartItem(props) {
     <Box flex={1} bg={'#ffffff'}>
       <Box mr={3} ml={3} flex={1} bg={'#ffffff'}>
         <SwipeListView
-          data={props.CartData}
+          data={props.FavouriteData}
           rightOpenValue={-50}
           previewRowKey="0"
           previewOpenValue={-40}
@@ -98,38 +106,6 @@ export default function CartItem(props) {
           onRowDidOpen={onRowDidOpen}
           showsVerticalScrollIndicator={false}
         />
-      </Box>
-
-      <Box mb={0} flex={0.4} roundedTop={15} bg={'#581c87'}>
-        <Center alignItems={'center'} mt={2}>
-          <HStack
-            shadow={1}
-            alignItems={'center'}
-            bg={'#9333ea'}
-            rounded={20}
-            overflow="hidden"
-            h={50}>
-            <Center>
-              <Text ml={5} isTruncated bold color={'#ffffff'} fontSize={20}>
-                Total Price
-              </Text>
-            </Center>
-            <Center>
-              <Text
-                ml={55}
-                mr={2}
-                isTruncated
-                bold
-                color={'#000000'}
-                fontSize={20}>
-                {Total} .RS
-              </Text>
-            </Center>
-          </HStack>
-        </Center>
-        <Center alignItems={'center'} mb={6}>
-          <DeliveryConfirmModel />
-        </Center>
       </Box>
     </Box>
   );

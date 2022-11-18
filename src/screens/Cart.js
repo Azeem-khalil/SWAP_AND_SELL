@@ -9,7 +9,27 @@ import { auth, db } from '../Component/DataBase/firebase';
 
 const Cart = () => {
   const [CartData, setCartData] = useState([]);
+  const [Total, setTotal] = useState(0);
+  const [flag, setflag] = useState(true);
 
+  useEffect(() => {
+    if (CartData.length > 0) {
+      setflag(true);
+      console.log('array is NOT empty');
+    }
+
+    if (CartData?.length > 0) {
+      setflag(true);
+
+      console.log('array is NOT empty');
+    }
+
+    if (CartData.length === 0) {
+      setflag(false);
+
+      console.log('array is empty');
+    }
+  }, [CartData]);
   useEffect(() => {
     let isMounted = true;
 
@@ -24,15 +44,19 @@ const Cart = () => {
 
         const unsubscribe = await onSnapshot(qc, querySnapshot => {
           const cartData = [];
+          let total = 0;
           querySnapshot.forEach(doc => {
             console.log('indoc: ' + `${doc.id} => ${doc.data()}`);
-
+            total += doc.data().totalprice;
             cartData.push({
               ...doc.data(),
               key: doc.id,
             });
           });
-          if (isMounted) setCartData(cartData);
+          if (isMounted) {
+            setCartData(cartData);
+            setTotal(total);
+          }
           console.log('cartData ' + cartData);
         });
       } catch (e) {
@@ -53,9 +77,9 @@ const Cart = () => {
           Cart
         </Text>
       </Center>
-      {/* If cart is empty */}
+      {console.log('CartData.length: ' + CartData.length)}
 
-      {CartData ? <CartItem CartData={CartData} /> : <EmptyCart />}
+      {flag ? <CartItem CartData={CartData} Total={Total} /> : <EmptyCart />}
     </Box>
   );
 };
