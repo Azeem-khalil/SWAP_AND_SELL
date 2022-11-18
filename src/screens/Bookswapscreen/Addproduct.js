@@ -36,7 +36,7 @@ const Addproduct = () => {
   const [errors, setErrors] = useState({});
   const [currentDate, setCurrentDate] = useState('');
 
-  let options = {
+  const options = {
     saveToPhotos: true,
     mediaType: 'photo',
   };

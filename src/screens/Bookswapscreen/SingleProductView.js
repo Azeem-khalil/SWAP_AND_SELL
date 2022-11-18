@@ -193,6 +193,27 @@ const SingleProductView = ({ route }) => {
       );
     }
   }
+  async function ADDtoFavorite() {
+    //if (checkCart && user && (!quantity == '' || !quantity == 0)) {
+    setflagFavorite(false);
+    const docRef = await addDoc(collection(db, 'favorite'), {
+      BooksAdsid: product.key,
+      BookName: product.BookName,
+      description: product.description,
+      need: product.need,
+      PhoneNumber: product.PhoneNumber,
+      image: product.image,
+      location: product.location,
+      rating: product.rating,
+      numReview: product.numReview,
+      useridfav: user.uid,
+      adfav: true,
+      // uid: product.uid,
+    });
+    //upadteCurrentProductCountInStock();
+    setflagFavorite(true);
+    navigation.navigate('Favourite');
+  }
 
   function checkReviewdatabase() {
     console.log('checkReviewdatabase Button: ');
@@ -224,28 +245,6 @@ const SingleProductView = ({ route }) => {
     }
   }
 
-  async function ADDtoFavorite() {
-    //if (checkCart && user && (!quantity == '' || !quantity == 0)) {
-    setflagFavorite(false);
-    const docRef = await addDoc(collection(db, 'favorite'), {
-      BooksAdsid: product.key,
-      BookName: product.BookName,
-      description: product.description,
-      need: product.need,
-      PhoneNumber: product.PhoneNumber,
-      image: product.image,
-      location: product.location,
-      rating: product.rating,
-      numReview: product.numReview,
-      useridfav: user.uid,
-      adfav: true,
-      // uid: product.uid,
-    });
-    //upadteCurrentProductCountInStock();
-    setflagFavorite(true);
-    navigation.navigate('Favourite');
-  }
-
   return (
     <Box safeArea flex={1} bg={'#ffffff'}>
       <Box flex={1} alignItems={'center'} justifyContent={'center'}>
@@ -265,7 +264,6 @@ const SingleProductView = ({ route }) => {
 
           <Box>
             <Box space={2} mY={5} mt={4}>
-              {/* {product.countInStock > 0 ? ( */}
               <Heading fontSize={12} mt={2}>
                 Description:
               </Heading>
@@ -292,11 +290,6 @@ const SingleProductView = ({ route }) => {
               </Text>
               {checkFavoritefun()}
 
-              {/* ) : ( */}
-              {/* <Heading bold color="#ff0000" fontSize={19}>
-                Out Of Stock
-              </Heading> */}
-              {/* )} */}
               {checkDelteFun(product.key)}
             </Box>
             <Heading bold fontSize={15} mt={7}>

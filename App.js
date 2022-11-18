@@ -81,38 +81,3 @@ export default function App() {
     </NavigationContainer>
   );
 }
-
-// const [userData, setUserData] = useState([]);
-// const getEntries = async () => {
-//   await AsyncStorage.setItem('key', 'val1');
-//   const value = await AsyncStorage.getItem('key');
-//   setUserData(AsyncStorage.getItem('LOGIN_TOKEN'));
-//   console.log(value);
-// };
-
-// useEffect(() => {
-//   getEntries();
-// }, []);
-// console.log(userData);
-
-// import AuthNav from './src/navigations/AuthNav';
-// import AppStackNav from './src/navigations/AppStackNav';
-//import { AsyncStorage } from '@react-native-async-storage/async-storage';
-
-// function MyStack() {
-//   return (
-//     <AuthNav />
-//     //<AppStackNav />
-//   );
-//   // if (auth.currentUser) {
-//   //   return (
-//   //     // <AuthNav />
-//   //     <AppStackNav />
-//   //   );
-//   // } else {
-//   //   return (
-//   //     <AuthNav />
-//   //     //<AppStackNav />
-//   //   );
-//   // }
-// }

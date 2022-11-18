@@ -16,6 +16,8 @@ import {
 } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import { useState } from 'react';
+import { useEffect } from 'react';
 
 const Content = props => {
   const navigation = useNavigation();
@@ -124,7 +126,9 @@ const Content = props => {
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBwgu1A5zgPSvfE83nurkuzNEoXs9DMNr8Ww&usqp=CAU',
     },
   ];
+
   // const BooksAds = props.BooksAds;
+
   return (
     <Center>
       <Box w="full">

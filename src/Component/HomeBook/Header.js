@@ -4,8 +4,11 @@ import Ionicons from 'react-native-vector-icons/Octicons';
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import { useState } from 'react';
 
 const Header = () => {
+  const [search, setSearch] = useState('');
+  const [filteredDataSource, setFilteredDataSource] = useState([]);
   const navigation = useNavigation();
   return (
     <Box>
