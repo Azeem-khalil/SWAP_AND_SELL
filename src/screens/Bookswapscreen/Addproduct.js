@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   VStack,
   Input,
@@ -32,13 +32,32 @@ const Addproduct = () => {
   const toast = useToast();
   const user = auth.currentUser;
 
-  const [formData, setData] = React.useState({});
-  const [errors, setErrors] = React.useState({});
+  const [formData, setData] = useState({});
+  const [errors, setErrors] = useState({});
+  const [currentDate, setCurrentDate] = useState('');
 
   let options = {
     saveToPhotos: true,
     mediaType: 'photo',
   };
+
+  useEffect(() => {
+    let isMounted = true;
+    var date = new Date().getDate(); //Current Date
+    var month = new Date().getMonth() + 1; //Current Month
+    var year = new Date().getFullYear(); //Current Year
+    var hours = new Date().getHours(); //Current Hours
+    var min = new Date().getMinutes(); //Current Minutes
+    var sec = new Date().getSeconds(); //Current Seconds
+    if (isMounted) {
+      setCurrentDate(
+        date + '/' + month + '/' + year + ' ' + hours + ':' + min + ':' + sec,
+      );
+    }
+    return () => {
+      isMounted = false;
+    };
+  }, []);
   const openCamera = async () => {
     try {
       const granted = await PermissionsAndroid.request(
@@ -74,12 +93,12 @@ const Addproduct = () => {
   };
   async function AddtoBookAd() {
     if (
-      checkAddBookAd &&
-      (!formData.BookName == '' ||
-        !formData.description == '' ||
-        !formData.need == '' ||
-        !formData.PhoneNumber == '' ||
-        !formData.location == '')
+      (checkAddBookAd &&
+        !formData.BookName == '' &&
+        !formData.description == '' &&
+        !formData.PhoneNumber == '' &&
+        !formData.location == '') ||
+      !formData.need == ''
     ) {
       setcheckAddBookAd(false);
       const docRef = await addDoc(collection(db, 'BooksAds'), {
@@ -94,7 +113,8 @@ const Addproduct = () => {
         location: formData.location,
         rating: 2,
         numReview: 6,
-        //addfav: true,
+        afav: false,
+        date: currentDate,
       });
       setcheckAddBookAd(true);
       // navigation.navigate('Cart');
@@ -114,9 +134,8 @@ const Addproduct = () => {
   const onSubmit = () => {
     console.log('formData ', formData);
     //validate() ? console.log('Submitted') : console.log('Validation Failed');
-    {
-      AddtoBookAd();
-    }
+
+    AddtoBookAd();
   };
 
   return (

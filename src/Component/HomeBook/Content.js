@@ -182,8 +182,7 @@ const Content = props => {
                     }}
                     color="coolGray.800"
                     alignSelf="flex-start">
-                    16/11/2022 20:54
-                    {/* {item.timeStamp} */}
+                    {item.date}
                   </Text>
                 </HStack>
               </Box>

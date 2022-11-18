@@ -26,6 +26,7 @@ import SwipSlider from '../../Component/SwipSlider';
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   onSnapshot,
   query,
@@ -65,9 +66,12 @@ const SingleProductView = ({ route }) => {
   const [size, setsize] = useState('');
   const [checkReview, setcheckReview] = useState(false);
   const [flagFavorite, setflagFavorite] = useState(true);
+  const [flagdelete, setflagdelete] = useState(true);
+
   const [checkFavorite, setcheckFavorite] = useState(false);
   const [checkFavoriteback, setcheckFavoriteback] = useState(true);
-
+  const [checkForDeleteAuthorizedUser, setcheckForDeleteAuthorizedUser] =
+    useState(false);
   const [currentDate, setCurrentDate] = useState('');
   const [quantity, setquantity] = useState('');
 
@@ -93,6 +97,52 @@ const SingleProductView = ({ route }) => {
       isMounted = false;
     };
   }, []);
+  function checkForDeleteAuthorizedUserDatabase() {
+    //setflagdelete(false);
+    console.log('checkForDeleteAuthorizedUser Button: ' + user.uid);
+    try {
+      const qc = query(
+        collection(db, 'BooksAds'),
+        where('uid', '==', user.uid),
+      );
+
+      const unsubscribe = onSnapshot(qc, querySnapshot => {
+        var Data = false;
+        querySnapshot.forEach(doc => {
+          console.log('checkForDeleteAuthorizedUser data ' + doc.id);
+          if (doc.id == product.key) Data = true;
+        });
+        setcheckForDeleteAuthorizedUser(Data);
+
+        console.log('Data ' + Data);
+      });
+    } catch (e) {
+      console.error('Error adding document: ', e);
+    }
+    //setflagdelete(true);
+  }
+  function checkDelteFun(key) {
+    console.log('checkAuthorizedUser: ', checkForDeleteAuthorizedUser);
+    checkForDeleteAuthorizedUserDatabase();
+
+    if (checkForDeleteAuthorizedUser) {
+      return (
+        <Button
+          borderRadius="full"
+          mt={10}
+          color="#ffffff"
+          bg="#5b21b6"
+          _pressed={{ bg: '#a78bfa' }}
+          onPress={() => {
+            deleteDoc(doc(db, 'BooksAds', key));
+            navigation.goBack();
+          }}
+          disabled={!flagdelete}>
+          DELETE AD
+        </Button>
+      );
+    }
+  }
   function checkFavDatabase() {
     console.log('checkReviewdatabase Button: ');
 
@@ -127,9 +177,8 @@ const SingleProductView = ({ route }) => {
 
   function checkFavoritefun() {
     checkFavDatabase();
-    console.log('product.addfav ' + product.addfav);
-    //&& product.addfav
-    if (!checkFavorite) {
+
+    if (!checkFavorite && !product.adfav) {
       return (
         <Button
           borderRadius="full"
@@ -189,20 +238,14 @@ const SingleProductView = ({ route }) => {
       rating: product.rating,
       numReview: product.numReview,
       useridfav: user.uid,
+      adfav: true,
       // uid: product.uid,
     });
     //upadteCurrentProductCountInStock();
     setflagFavorite(true);
     navigation.navigate('Favourite');
   }
-  async function upadteCurrentProductCountInStock() {
-    const Ref = doc(db, 'shoes', product.key);
-    //console.log('before numreview: ' + product.numReview);
-    // Set the "capital" field of the city 'DC'
-    await updateDoc(Ref, {
-      countInStock: product.countInStock - quantity,
-    });
-  }
+
   return (
     <Box safeArea flex={1} bg={'#ffffff'}>
       <Box flex={1} alignItems={'center'} justifyContent={'center'}>
@@ -230,6 +273,12 @@ const SingleProductView = ({ route }) => {
                 {product.description}
               </Text>
               <Heading fontSize={12} mt={2}>
+                Need:
+              </Heading>
+              <Text fontSize={12} lineHeight={24}>
+                {product.need}
+              </Text>
+              <Heading fontSize={12} mt={2}>
                 Phone Number:
               </Heading>
               <Text fontSize={12} lineHeight={24}>
@@ -248,6 +297,7 @@ const SingleProductView = ({ route }) => {
                 Out Of Stock
               </Heading> */}
               {/* )} */}
+              {checkDelteFun(product.key)}
             </Box>
             <Heading bold fontSize={15} mt={7}>
               User Review

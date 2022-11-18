@@ -34,17 +34,7 @@ export default function FavouritIteme(props) {
 
   const renderItem = data => (
     <Pressable
-      onLongPress={() => navigation.navigate('SingleProductView', data.item)}
-      // onPress={() => {
-      //   const BookData = [];
-      //   BookData.push({
-      //     ...data.item,
-      //     addfav: false,
-      //   });
-
-      //   navigation.navigate('SingleProductView', BookData);
-      // }}
-    >
+      onLongPress={() => navigation.navigate('SingleProductView', data.item)}>
       <Box mb={3}>
         <HStack
           alignItems={'center'}
