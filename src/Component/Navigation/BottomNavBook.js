@@ -56,24 +56,6 @@ const BottomNavBook = () => {
           headerShown: false,
         }}
       />
-
-      {/* Home */}
-      <Tab.Screen
-        name="Home"
-        component={Home}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <Center>
-              {focused ? (
-                <Entypo name="home" size={24} color={'#ffffff'} />
-              ) : (
-                <AntDesign name="home" size={24} color={'#ffffff'} />
-              )}
-            </Center>
-          ),
-          headerShown: false,
-        }}
-      />
       {/* ADD product */}
       <Tab.Screen
         name="Addproduct"
@@ -92,26 +74,26 @@ const BottomNavBook = () => {
           headerShown: false,
         }}
       />
-      {/*start Cart */}
+      {/* Home */}
       <Tab.Screen
-        name="HomeS"
-        component={HomeS}
+        name="Home"
+        component={Home}
         options={{
-          // tabBarButton: props => <CustomTab {...props} />,
           tabBarIcon: ({ focused }) => (
             <Center>
               {focused ? (
-                <Entypo name="shopping-cart" size={24} color={'#ffffff'} />
+                <Entypo name="home" size={24} color={'#ffffff'} />
               ) : (
-                <AntDesign name="shoppingcart" size={24} color={'#FFFFFF'} />
+                <AntDesign name="home" size={24} color={'#ffffff'} />
               )}
             </Center>
           ),
           headerShown: false,
         }}
       />
-      {/*start Cart */}
-      <Tab.Screen
+
+      {/*start Favourite */}
+      {/* <Tab.Screen
         name="Favourite"
         component={Favourite}
         options={{
@@ -126,8 +108,8 @@ const BottomNavBook = () => {
             </Center>
           ),
           headerShown: false,
-        }}
-      />
+        }} */}
+      {/* /> */}
     </Tab.Navigator>
   );
 };

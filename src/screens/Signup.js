@@ -185,7 +185,7 @@ const Signup = ({ navigation }) => {
             <Button
               onPress={handleSubmission}
               mt="2"
-              colorScheme="indigo"
+              bg={'#581c87'}
               isDisabled={submitButtonDisabled}>
               Sign up
             </Button>

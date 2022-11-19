@@ -12,6 +12,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './src/Component/DataBase/firebase';
 import { useEffect, useState } from 'react';
 import { LogBox } from 'react-native';
+import ForgetPassword from './src/screens/ForgetPassword';
 // console.log(auth);
 const Stack = createNativeStackNavigator();
 export default function App() {
@@ -81,6 +82,11 @@ export default function App() {
                 options={{ headerShown: false }}
                 name={'Signup'}
                 component={Signup}
+              />
+              <Stack.Screen
+                options={{ headerShown: false }}
+                name={'ForgetPassword'}
+                component={ForgetPassword}
               />
             </>
           ) : (

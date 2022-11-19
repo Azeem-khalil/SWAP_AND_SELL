@@ -147,6 +147,7 @@ function Login({ navigation }) {
                 }}
               />
               <Link
+                onPress={() => navigation.navigate('ForgetPassword')}
                 _text={{
                   fontSize: 'xs',
                   fontWeight: '500',
@@ -157,11 +158,7 @@ function Login({ navigation }) {
                 Forget Password?
               </Link>
             </FormControl>
-            <Button
-              //onPress={() => navigation.navigate('Mainnavigation')}
-              onPress={handleSubmission}
-              mt="2"
-              colorScheme="indigo">
+            <Button onPress={handleSubmission} mt="2" bg={'#581c87'}>
               Sign in
             </Button>
             <HStack mt="6" justifyContent="center">
