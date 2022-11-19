@@ -8,12 +8,13 @@ import { collection, onSnapshot, query } from 'firebase/firestore';
 import { useState } from 'react';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Ionicons from 'react-native-vector-icons/Octicons';
+import { useNavigation } from '@react-navigation/native';
 
 const Home = () => {
   const [BooksAds, setBooksAds] = useState([]);
   const [filteredDataSource, setFilteredDataSource] = useState([]);
   const [search, setSearch] = useState('');
-
+  const navigation = useNavigation();
   useEffect(() => {
     let isMounted = true;
     const fetchData = async () => {
@@ -56,7 +57,8 @@ const Home = () => {
         // Applying filter for the inserted text in search bar
         const itemData =
           (item.BookName ? item.BookName.toUpperCase() : ''.toUpperCase()) +
-          (item.need ? item.need.toUpperCase() : ''.toUpperCase());
+          (item.need ? item.need.toUpperCase() : ''.toUpperCase()) +
+          (item.need ? item.date.toUpperCase() : ''.toUpperCase());
         const textData = text.toUpperCase();
         return itemData.indexOf(textData) > -1;
       });
@@ -97,9 +99,7 @@ const Home = () => {
               <EvilIcons style={{ marginLeft: 5 }} size={30} name="search" />
             }
           />
-          <Pressable
-            ml={3} //onPress={() => navigation.navigate('Cart')}
-          >
+          <Pressable ml={3} onPress={() => navigation.navigate('Favourite')}>
             <Ionicons name="heart" color={'#ffffff'} size={24} />
             <Box
               px={1}

@@ -97,6 +97,31 @@ const SingleProductView = ({ route }) => {
       isMounted = false;
     };
   }, []);
+  async function deleteAction(key) {
+    deleteDoc(doc(db, 'BooksAds', key));
+    const qc = query(
+      collection(db, 'favorite'),
+      where('BooksAdsid', '==', product.key),
+    );
+
+    const unsubscribe = onSnapshot(qc, querySnapshot => {
+      const BookData = [];
+      querySnapshot.forEach(doc => {
+        console.log('favorite deleteDoc id ' + doc.id);
+        BookData.push({
+          key: doc.id,
+        });
+      });
+      for (let i = 0; i < BookData.length; i++) {
+        console.log('favorite BookData[i].key ' + BookData[i].key);
+        const userDocRef = doc(db, 'favorite', BookData[i].key);
+        updateDoc(userDocRef, {
+          deleteAction: true,
+        });
+        //deleteDoc(doc(db, 'favorite', BookData[i].key));
+      }
+    });
+  }
   function checkForDeleteAuthorizedUserDatabase() {
     //setflagdelete(false);
     console.log('checkForDeleteAuthorizedUser Button: ' + user.uid);
@@ -134,7 +159,7 @@ const SingleProductView = ({ route }) => {
           bg="#5b21b6"
           _pressed={{ bg: '#a78bfa' }}
           onPress={() => {
-            deleteDoc(doc(db, 'BooksAds', key));
+            deleteAction(key);
             navigation.goBack();
           }}
           disabled={!flagdelete}>
@@ -149,25 +174,18 @@ const SingleProductView = ({ route }) => {
     try {
       const qc = query(
         collection(db, 'favorite'),
-        where(
-          'BooksAdsid',
-          '==',
-          product.key,
-          '&&',
-          'useridfav',
-          '==',
-          user.uid,
-        ),
+        where('BooksAdsid', '==', product.key),
+        where('useridfav', '==', user.uid),
       );
 
       const unsubscribe = onSnapshot(qc, querySnapshot => {
         var Data = false;
         querySnapshot.forEach(doc => {
-          console.log('checkReviewdat data ' + doc.id);
+          console.log('checkfavdata data ' + doc.id);
           Data = true;
         });
         setcheckFavorite(Data);
-        setcheckFavoriteback(product.addfav);
+        //setcheckFavoriteback(product.addfav);
         console.log('Data ' + Data);
       });
     } catch (e) {
@@ -178,19 +196,24 @@ const SingleProductView = ({ route }) => {
   function checkFavoritefun() {
     checkFavDatabase();
 
-    if (!checkFavorite && !product.adfav) {
-      return (
-        <Button
-          borderRadius="full"
-          mt={10}
-          color="#ffffff"
-          bg="#5b21b6"
-          _pressed={{ bg: '#a78bfa' }}
-          onPress={ADDtoFavorite}
-          disabled={!flagFavorite}>
-          ADD TO Favorite
-        </Button>
-      );
+    if (!product.adfav) {
+      console.log('Error adding document: ', !product.adfav);
+      console.log('checkFavorite adding document: ', !checkFavorite);
+
+      if (!checkFavorite) {
+        return (
+          <Button
+            borderRadius="full"
+            mt={10}
+            color="#ffffff"
+            bg="#5b21b6"
+            _pressed={{ bg: '#a78bfa' }}
+            onPress={ADDtoFavorite}
+            disabled={!flagFavorite}>
+            ADD TO Favorite
+          </Button>
+        );
+      }
     }
   }
   async function ADDtoFavorite() {
@@ -208,6 +231,7 @@ const SingleProductView = ({ route }) => {
       numReview: product.numReview,
       useridfav: user.uid,
       adfav: true,
+      deleteAction: false,
       // uid: product.uid,
     });
     //upadteCurrentProductCountInStock();

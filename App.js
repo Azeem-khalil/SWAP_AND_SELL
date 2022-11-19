@@ -1,6 +1,6 @@
 // App.js
 import * as React from 'react';
-import { NativeBaseProvider, StatusBar } from 'native-base';
+import { Box, NativeBaseProvider, StatusBar, useToast } from 'native-base';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -16,6 +16,10 @@ import { LogBox } from 'react-native';
 const Stack = createNativeStackNavigator();
 export default function App() {
   const [Authuser, setAuthUser] = useState(null);
+  const [EmailVerified, setEmailVerified] = useState(false);
+
+  const toast = useToast();
+
   useEffect(() => {
     let isMounted = true;
 
@@ -25,13 +29,20 @@ export default function App() {
           // User is signed in, see docs for a list of available properties
           // https://firebase.google.com/docs/reference/js/firebase.User
           const uid = user.uid;
-          if (isMounted) setAuthUser(uid);
-          console.log('in use ' + uid);
+
+          if (isMounted) {
+            setAuthUser(uid);
+            if (user.emailVerified) {
+              setEmailVerified(true);
+            } else console.log('in use ' + uid);
+          }
           // ...
         } else {
-          if (isMounted) setAuthUser(null);
-          console.log('out use ');
-
+          if (isMounted) {
+            setAuthUser(null);
+            setEmailVerified(false);
+          }
+          console.log('user.emailVerified ');
           // User is signed ou
           // ...
         }
@@ -49,6 +60,9 @@ export default function App() {
   LogBox.ignoreLogs([
     'AsyncStorage has been extracted from react-native core and will be removed in a future release. ',
   ]);
+  const MainnavigationComponent = () => (
+    <Mainnavigation EmailVerified={EmailVerified} />
+  );
   return (
     <NavigationContainer>
       <NativeBaseProvider>
@@ -73,7 +87,7 @@ export default function App() {
             <Stack.Screen
               options={{ headerShown: false }}
               name={'Mainnavigation'}
-              component={Mainnavigation}
+              component={MainnavigationComponent}
             />
           )}
         </Stack.Navigator>

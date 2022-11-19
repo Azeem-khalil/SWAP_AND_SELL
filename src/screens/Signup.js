@@ -20,7 +20,11 @@ import {
   where,
 } from 'firebase/firestore';
 import React, { useState } from 'react';
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  updateProfile,
+} from 'firebase/auth';
 import { auth, db } from '../Component/DataBase/firebase';
 
 const Signup = ({ navigation }) => {
@@ -71,18 +75,32 @@ const Signup = ({ navigation }) => {
     createUserWithEmailAndPassword(auth, email, pass)
       .then(async userCredential => {
         const user = userCredential.user;
-        await updateProfile(user, {
-          displayName: name,
+        const actionCodeSettings = {
+          url: 'https://database-a86a6.firebaseapp.com',
+          handleCodeInApp: true,
+        };
+        // Obtain code from the user.
+        //applyActionCode(auth, code);
+        console.log('log error ' + auth.currentUser);
+
+        sendEmailVerification(user, actionCodeSettings).then(async () => {
+          // Email verification sent!
+          // ...
+          //});
+          // sendEmailVerification(user).then(async () => {
+          await updateProfile(user, {
+            displayName: name,
+          });
+          const docRef = await addDoc(collection(db, 'user'), {
+            displayName: name,
+            email: email,
+            address: '',
+            phoneNumber: '',
+            profileImage: '',
+          });
+          setSubmitButtonDisabled(false);
+          //navigation.navigate('Login');
         });
-        const docRef = await addDoc(collection(db, 'user'), {
-          displayName: name,
-          email: email,
-          address: '',
-          phoneNumber: '',
-          profileImage: '',
-        });
-        setSubmitButtonDisabled(false);
-        navigation.navigate('Login');
 
         console.console.log('aftr logn');
       })

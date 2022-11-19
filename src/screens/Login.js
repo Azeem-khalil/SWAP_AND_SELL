@@ -19,6 +19,8 @@ import {
   createUserWithEmailAndPassword,
   updateProfile,
   signInWithEmailAndPassword,
+  sendEmailVerification,
+  applyActionCode,
 } from 'firebase/auth';
 import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
 function Login({ navigation }) {
@@ -83,6 +85,7 @@ function Login({ navigation }) {
         setSubmitButtonDisabled(false);
         const user = userCredential.user.uid;
         console.log(user);
+
         navigation.navigate('Mainnavigation');
       })
       .catch(err => {

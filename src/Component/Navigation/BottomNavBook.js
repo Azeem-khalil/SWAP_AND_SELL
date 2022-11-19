@@ -2,18 +2,17 @@ import { View, Text, StyleSheet } from 'react-native';
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import Cart from '../../screens/Cart';
 import { Center, Pressable } from 'native-base';
 import Entypo from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-import Profile from '../../screens/Profile';
 import Favourite from '../../screens/Bookswapscreen/Favourite';
 import Addproduct from '../../screens/Bookswapscreen/Addproduct';
 import HomeS from '../../screens/Home';
 import Home from '../../screens/Bookswapscreen/Home';
+import Profile from '../../screens/Profile';
 
 const Tab = createBottomTabNavigator();
 const CustomTab = ({ children, onPress }) => {

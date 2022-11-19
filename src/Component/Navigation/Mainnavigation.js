@@ -12,7 +12,10 @@ import Contact from '../../screens/Contact';
 
 const Stack = createNativeStackNavigator();
 
-const Mainnavigation = () => {
+const Mainnavigation = props => {
+  const MainPageComponent = () => (
+    <MainPage EmailVerified={props.EmailVerified} />
+  );
   return (
     <Stack.Navigator
       initialRouteName="MainPage"
@@ -20,7 +23,7 @@ const Mainnavigation = () => {
       <Stack.Screen
         options={{ headerShown: false }}
         name={'MainPage'}
-        component={MainPage}
+        component={MainPageComponent}
       />
       <Stack.Screen
         options={{ headerShown: false }}

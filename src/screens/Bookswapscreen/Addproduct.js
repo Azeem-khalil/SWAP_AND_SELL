@@ -25,6 +25,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { auth, db } from '../../Component/DataBase/firebase';
 import { addDoc, collection } from 'firebase/firestore';
+import { useNavigation } from '@react-navigation/native';
 const Addproduct = () => {
   const [cameraPhoto, setCameraPhoto] = useState();
   const [galleryPhoto, setGalleryPhoto] = useState();
@@ -35,6 +36,7 @@ const Addproduct = () => {
   const [formData, setData] = useState({});
   const [errors, setErrors] = useState({});
   const [currentDate, setCurrentDate] = useState('');
+  const navigation = useNavigation();
 
   const options = {
     saveToPhotos: true,
@@ -113,11 +115,21 @@ const Addproduct = () => {
         location: formData.location,
         rating: 2,
         numReview: 6,
-        afav: false,
+        adfav: false,
         date: currentDate,
       });
       setcheckAddBookAd(true);
-      // navigation.navigate('Cart');
+
+      toast.show({
+        render: () => {
+          return (
+            <Box bg="#ffffff" px="2" py="1" rounded="sm" mb={5}>
+              Added successfully!!!
+            </Box>
+          );
+        },
+      });
+      //navigation.navigate('Cart');
     } else {
       toast.show({
         render: () => {
@@ -136,6 +148,7 @@ const Addproduct = () => {
     //validate() ? console.log('Submitted') : console.log('Validation Failed');
 
     AddtoBookAd();
+    //navigation.goBack();
   };
 
   return (

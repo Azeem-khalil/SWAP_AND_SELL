@@ -34,6 +34,7 @@ export default function FavouritIteme(props) {
 
   const renderItem = data => (
     <Pressable
+      disabled={data.item.deleteAction}
       onLongPress={() => navigation.navigate('SingleProductView', data.item)}>
       <Box mb={3}>
         <HStack
@@ -55,6 +56,11 @@ export default function FavouritIteme(props) {
               {data.item.BookName}
             </Text>
             <Text bold ml={4} fontSize={17} color={'#696969'}>
+              {data.item.date}
+              {/* ${data.item.totalprice} */}
+            </Text>
+            <Text bold ml={4} fontSize={17} color={'#696969'}>
+              {data.item.deleteAction ? 'item is deleted' : ''}
               {/* ${data.item.totalprice} */}
             </Text>
           </VStack>

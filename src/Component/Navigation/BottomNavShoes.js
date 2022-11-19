@@ -9,8 +9,8 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-import Profile from '../../screens/Profile';
 import Home from '../../screens/Home';
+import Profile from '../../screens/Profile';
 
 const Tab = createBottomTabNavigator();
 const CustomTab = ({ children, onPress }) => {
