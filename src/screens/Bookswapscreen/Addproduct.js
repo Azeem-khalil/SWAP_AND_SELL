@@ -21,9 +21,10 @@ import {
   Image,
   PermissionsAndroid,
 } from 'react-native';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { auth, db } from '../../Component/DataBase/firebase';
+import { auth, db, storage } from '../../Component/DataBase/firebase';
 import { addDoc, collection } from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 const Addproduct = () => {
@@ -99,6 +100,7 @@ const Addproduct = () => {
         !formData.BookName == '' &&
         !formData.description == '' &&
         !formData.PhoneNumber == '' &&
+        !formData.image == '' &&
         !formData.location == '') ||
       !formData.need == ''
     ) {
@@ -110,8 +112,7 @@ const Addproduct = () => {
         description: formData.description,
         need: formData.need,
         PhoneNumber: formData.PhoneNumber,
-        image:
-          'https://images.unsplash.com/photo-1541963463532-d68292c34b19?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80',
+        image: formData.image,
         location: formData.location,
         rating: 2,
         numReview: 6,
@@ -134,8 +135,8 @@ const Addproduct = () => {
       toast.show({
         render: () => {
           return (
-            <Box bg="emerald.500" px="2" py="1" rounded="sm" mb={5}>
-              Before add Book Ad Please select quantity
+            <Box bg="#ffffff" px="2" py="1" rounded="sm" mb={5}>
+              Before add Book Ad Please Fill all Failed!!
             </Box>
           );
         },
@@ -143,10 +144,32 @@ const Addproduct = () => {
       return;
     }
   }
+  const uploadImage = async () => {
+    const response = await fetch(galleryPhoto);
+    const blob = await response.blob();
+    const filename = galleryPhoto.substring(galleryPhoto.lastIndexOf('/') + 1);
+    console.log('blob!', blob);
+
+    const storageRef = ref(storage, filename);
+    console.log('galleryPhoto!', galleryPhoto);
+    // 'file' comes from the Blob or File API
+    uploadBytes(storageRef, blob).then(snapshot => {
+      console.log('snapshot!', snapshot.metadata.fullPath);
+      const starsRef = ref(storage, snapshot.metadata.fullPath);
+
+      // Get the download URL
+      getDownloadURL(starsRef).then(url => {
+        console.log('url! ', url);
+        setData({ ...formData, image: url });
+
+        // Insert url into an <img> tag to "download"
+      });
+    });
+  };
   const onSubmit = () => {
     console.log('formData ', formData);
     //validate() ? console.log('Submitted') : console.log('Validation Failed');
-
+    uploadImage();
     AddtoBookAd();
     //navigation.goBack();
   };
@@ -298,10 +321,14 @@ const Addproduct = () => {
               )}
             </FormControl>
             <TouchableOpacity onPress={openGallery} style={styles.button}>
-              <Text style={styles.buttonText}>Open Gallery</Text>
+              <Text style={styles.buttonText}>Sellect Image</Text>
             </TouchableOpacity>
             {console.log('galleryPhoto' + galleryPhoto)}
-            {<Image style={styles.imageStyle} source={{ uri: galleryPhoto }} />}
+            {galleryPhoto ? (
+              <Image style={styles.imageStyle} source={{ uri: galleryPhoto }} />
+            ) : (
+              <Text></Text>
+            )}
 
             <Button onPress={onSubmit} mt="5" colorScheme="cyan">
               Submit
