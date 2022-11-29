@@ -20,6 +20,39 @@ export default function CategoryTab() {
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     let isMounted = true;
+
+    const fetchData = async () => {
+      console.log('press Button: ');
+
+      try {
+        const qc = query(
+          collection(db, 'shoes'),
+          where('category', '==', 'men'),
+        );
+
+        const unsubscribe = await onSnapshot(qc, querySnapshot => {
+          const shoesData = [];
+          querySnapshot.forEach(doc => {
+            console.log('indoc: ' + `${doc.id} => ${doc.data()}`);
+            shoesData.push({
+              ...doc.data(),
+              key: doc.id,
+            });
+          });
+          if (isMounted) setmenData(shoesData);
+          console.log('shoesData ' + shoesData);
+        });
+      } catch (e) {
+        console.error('Error adding document: ', e);
+      }
+    };
+    fetchData();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+  useEffect(() => {
+    let isMounted = true;
     const fetchData = async () => {
       console.log('press Button: ');
 
@@ -52,40 +85,7 @@ export default function CategoryTab() {
       isMounted = false;
     };
   }, []);
-  useEffect(() => {
-    let isMounted = true;
 
-    const fetchData = async () => {
-      console.log('press Button: ');
-
-      try {
-        const qc = query(
-          collection(db, 'shoes'),
-          where('category', '==', 'men'),
-        );
-
-        const unsubscribe = await onSnapshot(qc, querySnapshot => {
-          const shoesData = [];
-          querySnapshot.forEach(doc => {
-            console.log('indoc: ' + `${doc.id} => ${doc.data()}`);
-
-            shoesData.push({
-              ...doc.data(),
-              key: doc.id,
-            });
-          });
-          if (isMounted) setmenData(shoesData);
-          console.log('shoesData ' + shoesData);
-        });
-      } catch (e) {
-        console.error('Error adding document: ', e);
-      }
-    };
-    fetchData();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
   useEffect(() => {
     let isMounted = true;
 

@@ -10,25 +10,28 @@ import { auth, db } from '../Component/DataBase/firebase';
 const Cart = () => {
   const [CartData, setCartData] = useState([]);
   const [Total, setTotal] = useState(0);
-  const [flag, setflag] = useState(true);
+  const [isEmpty, setisEmpty] = useState(true);
 
   useEffect(() => {
-    if (CartData.length > 0) {
-      setflag(true);
-      console.log('array is NOT empty');
+    async function checkCart() {
+      if (CartData.length > 0) {
+        const temp = await setisEmpty(true);
+        console.log('array is NOT empty');
+      }
+
+      if (CartData?.length > 0) {
+        const temp = await setisEmpty(true);
+
+        console.log('array is NOT empty');
+      }
+
+      if (CartData.length === 0) {
+        const temp = await setisEmpty(false);
+
+        console.log('array is empty');
+      }
     }
-
-    if (CartData?.length > 0) {
-      setflag(true);
-
-      console.log('array is NOT empty');
-    }
-
-    if (CartData.length === 0) {
-      setflag(false);
-
-      console.log('array is empty');
-    }
+    checkCart();
   }, [CartData]);
   useEffect(() => {
     let isMounted = true;
@@ -78,8 +81,7 @@ const Cart = () => {
         </Text>
       </Center>
       {console.log('CartData.length: ' + CartData.length)}
-
-      {flag ? <CartItem CartData={CartData} Total={Total} /> : <EmptyCart />}
+      {isEmpty ? <CartItem CartData={CartData} Total={Total} /> : <EmptyCart />}
     </Box>
   );
 };

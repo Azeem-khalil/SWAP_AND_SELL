@@ -166,6 +166,17 @@ const SingleProductView = ({ route }) => {
           DELETE AD
         </Button>
       );
+    } else {
+      return (
+        <Button
+          borderRadius="full"
+          mt={10}
+          color="#ffffff"
+          bg="#d8b4fe"
+          disabled={true}>
+          DELETE AD
+        </Button>
+      );
     }
   }
   function checkFavDatabase() {

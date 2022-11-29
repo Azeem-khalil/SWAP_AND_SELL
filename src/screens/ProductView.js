@@ -211,7 +211,7 @@ const ProductView = ({ route }) => {
                     _pressed={{ bg: '#a78bfa' }}
                     onPress={ADDtoCART}
                     disabled={!checkCart}>
-                    ADD TO CADR
+                    ADD TO CART
                   </Button>
                 </Box>
               ) : (

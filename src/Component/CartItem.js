@@ -18,18 +18,48 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Product from './data/Product';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import DeliveryConfirmModel from './DeliveryConfirmModel';
-import { deleteDoc, doc } from 'firebase/firestore';
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  updateDoc,
+} from 'firebase/firestore';
 import { db } from './DataBase/firebase';
 
 export default function CartItem(props) {
   const { isOpen, onOpen, onClose } = useDisclose();
   const Total = props.Total;
+  const CartData = props.CartData;
+  const [previewValueInStock, setpreviewValueInStock] = useState(0);
 
-  async function deleteCartProduct(rowMap, rowKey) {
-    console.log('key: ' + rowKey);
+  async function getpreviewValueInStockindatabase(productid) {
+    let countInStock = 0;
+    const docRef = doc(db, 'shoes', productid);
+    const querySnapshot = await getDoc(docRef);
+    if (querySnapshot.exists()) {
+      console.log(`countInStock => ${querySnapshot.data()}`);
+      countInStock = querySnapshot.data().countInStock;
+    } else {
+      console.log('No such document!');
+    }
+
+    setpreviewValueInStock(countInStock);
+  }
+  async function deleteCartProduct(rowKey) {
+    console.log('rowKey: ' + rowKey);
+
     await deleteDoc(doc(db, 'cart', rowKey));
   }
+  async function udateProduct(productid, quantity) {
+    getpreviewValueInStockindatabase(productid);
 
+    console.log('previewValueInStock: ' + previewValueInStock);
+    const userDocRef = doc(db, 'shoes', productid);
+    await updateDoc(userDocRef, {
+      countInStock: previewValueInStock + quantity,
+    });
+  }
   const renderItem = data => (
     <Pressable>
       <Box mb={3}>
@@ -52,7 +82,7 @@ export default function CartItem(props) {
               {data.item.productName}
             </Text>
             <Text bold ml={4} fontSize={17} color={'#696969'}>
-              ${data.item.totalprice}
+              {data.item.totalprice}
             </Text>
           </VStack>
           <Center>
@@ -67,7 +97,10 @@ export default function CartItem(props) {
 
   const renderHiddenItem = (data, rowMap) => (
     <Pressable
-      onPress={() => deleteCartProduct(rowMap, data.item.key)}
+      onPress={() => {
+        deleteCartProduct(data.item.key);
+        udateProduct(data.item.productid, data.item.quantity);
+      }}
       w={50}
       roundedTopRight={10}
       roundedBottomRight={10}
@@ -88,7 +121,7 @@ export default function CartItem(props) {
     <Box flex={1} bg={'#ffffff'}>
       <Box mr={3} ml={3} flex={1} bg={'#ffffff'}>
         <SwipeListView
-          data={props.CartData}
+          data={CartData}
           rightOpenValue={-50}
           previewRowKey="0"
           previewOpenValue={-40}
@@ -128,7 +161,7 @@ export default function CartItem(props) {
           </HStack>
         </Center>
         <Center alignItems={'center'} mb={6}>
-          <DeliveryConfirmModel />
+          <DeliveryConfirmModel CartData={CartData} Total={Total} />
         </Center>
       </Box>
     </Box>
