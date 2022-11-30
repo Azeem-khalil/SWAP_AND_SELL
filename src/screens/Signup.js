@@ -96,7 +96,7 @@ const Signup = ({ navigation }) => {
             email: email,
             address: '',
             phoneNumber: '',
-            profileImage: '',
+            profileImage: null,
           });
           setSubmitButtonDisabled(false);
           //navigation.navigate('Login');

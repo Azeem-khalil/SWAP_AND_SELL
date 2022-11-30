@@ -62,6 +62,8 @@ const ProductView = ({ route }) => {
   ];
   const [size, setsize] = useState('');
   const [checkReview, setcheckReview] = useState(false);
+  const [checkUserOrderThisProduct, setcheckUserOrderThisProduct] =
+    useState(false);
   const [checkCart, setcheckCart] = useState(true);
   const [currentDate, setCurrentDate] = useState('');
   const [quantity, setquantity] = useState('');
@@ -88,19 +90,42 @@ const ProductView = ({ route }) => {
       isMounted = false;
     };
   }, []);
-  function checkReviewdatabase() {
-    console.log('checkReviewdatabase Button: ');
+  function checkUserPlaceOrderThisProduct() {
+    console.log('checkUserPlaceOrderThisProduct Button: ');
+
+    try {
+      const qc = query(
+        collection(db, 'padingOrder'),
+        where('products', 'in', [[product.key]]),
+      );
+      const unsubscribe = onSnapshot(qc, querySnapshot => {
+        var Data = false;
+        querySnapshot.forEach(doc => {
+          console.log('checkUserOrderThisProduct  ' + doc.id);
+          Data = true;
+        });
+        setcheckUserOrderThisProduct(Data);
+        console.log('Data ' + Data);
+      });
+    } catch (e) {
+      console.error('Error check document: ', e);
+    }
+  }
+
+  function checkAlreadyReview() {
+    console.log('checkAlreadyReview Button: ', user.uid);
 
     try {
       const qc = query(
         collection(db, 'shoesReviews'),
-        where('productid', '==', product.key, '&&', 'userid', '==', user.id),
+        where('productid', '==', product.key),
+        where('userid', '==', user.uid),
       );
 
       const unsubscribe = onSnapshot(qc, querySnapshot => {
         var Data = false;
         querySnapshot.forEach(doc => {
-          console.log('checkReviewdat data ' + doc.id);
+          console.log('checkReview data ' + doc.id);
           Data = true;
         });
         setcheckReview(Data);
@@ -112,9 +137,14 @@ const ProductView = ({ route }) => {
   }
 
   function checkReviewfun() {
-    checkReviewdatabase();
-    if (!checkReview) {
-      return <WriteReview productArray={product} />;
+    checkUserPlaceOrderThisProduct();
+    if (checkUserOrderThisProduct) {
+      console.log('checkUserOrderThisProduct: ', checkUserOrderThisProduct);
+
+      checkAlreadyReview();
+      if (!checkReview) {
+        return <WriteReview productArray={product} />;
+      }
     }
   }
 

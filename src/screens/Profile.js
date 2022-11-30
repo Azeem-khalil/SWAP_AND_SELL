@@ -87,7 +87,7 @@ export default function Profile() {
               onPress={() => navigation.navigate('Edit_Profile', userData)}
               icon={<Icon size={20} color={'#ffffff'} name="account-edit" />}
             />
-            <UploadImage />
+            <UploadImage userData={userData} />
             <Heading style={{ marginVertical: 20, fontSize: 16 }}>
               {userData.displayName}
             </Heading>

@@ -80,7 +80,7 @@ const Addproduct = () => {
 
   const openGallery = async () => {
     const result = await launchImageLibrary(options);
-    setGalleryPhoto(result.assets[0].uri);
+    if (!result.didCancel) setGalleryPhoto(result.assets[0].uri);
   };
 
   const validate = () => {
@@ -105,6 +105,15 @@ const Addproduct = () => {
       !formData.need == ''
     ) {
       setcheckAddBookAd(false);
+      toast.show({
+        render: () => {
+          return (
+            <Box bg="#ffffff" px="2" py="1" rounded="sm" mb={5}>
+              Added successfully!!!
+            </Box>
+          );
+        },
+      });
       const docRef = await addDoc(collection(db, 'BooksAds'), {
         userName: user.displayName,
         uid: user.uid,
@@ -121,15 +130,6 @@ const Addproduct = () => {
       });
       setcheckAddBookAd(true);
 
-      toast.show({
-        render: () => {
-          return (
-            <Box bg="#ffffff" px="2" py="1" rounded="sm" mb={5}>
-              Added successfully!!!
-            </Box>
-          );
-        },
-      });
       //navigation.navigate('Cart');
     } else {
       toast.show({
@@ -169,8 +169,10 @@ const Addproduct = () => {
   const onSubmit = () => {
     console.log('formData ', formData);
     //validate() ? console.log('Submitted') : console.log('Validation Failed');
-    uploadImage();
-    AddtoBookAd();
+    if (galleryPhoto) {
+      AddtoBookAd();
+    }
+
     //navigation.goBack();
   };
 
@@ -325,11 +327,17 @@ const Addproduct = () => {
             </TouchableOpacity>
             {console.log('galleryPhoto' + galleryPhoto)}
             {galleryPhoto ? (
-              <Image style={styles.imageStyle} source={{ uri: galleryPhoto }} />
+              <Image
+                style={styles.imageStyle}
+                alt={''}
+                source={{ uri: galleryPhoto }}
+              />
             ) : (
               <Text></Text>
             )}
-
+            <TouchableOpacity onPress={uploadImage} style={styles.button}>
+              <Text style={styles.buttonText}>upload Image</Text>
+            </TouchableOpacity>
             <Button onPress={onSubmit} mt="5" colorScheme="cyan">
               Submit
             </Button>
