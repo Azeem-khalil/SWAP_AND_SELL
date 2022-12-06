@@ -33,32 +33,44 @@ export default function CartItem(props) {
   const CartData = props.CartData;
   const [previewValueInStock, setpreviewValueInStock] = useState(0);
 
-  async function getpreviewValueInStockindatabase(productid) {
+  async function actions(productid, quantity, key, resolve) {
+    //get preview Value InStock in database
     let countInStock = 0;
     const docRef = doc(db, 'shoes', productid);
     const querySnapshot = await getDoc(docRef);
     if (querySnapshot.exists()) {
-      console.log(`countInStock => ${querySnapshot.data()}`);
+      console.log(`countInStock1 => ${querySnapshot.data().countInStock}`);
       countInStock = querySnapshot.data().countInStock;
+      setpreviewValueInStock(querySnapshot.data().countInStock);
     } else {
       console.log('No such document!');
     }
+    // update Product countInStock
+    updateProduct(productid, quantity, key, countInStock, resolve);
 
-    setpreviewValueInStock(countInStock);
+    resolve();
   }
-  async function deleteCartProduct(rowKey) {
-    console.log('rowKey: ' + rowKey);
+  async function deleteCartProduct(rowKey, resolve) {
+    console.log('rowKey3: ' + rowKey);
 
     await deleteDoc(doc(db, 'cart', rowKey));
+    resolve();
   }
-  async function udateProduct(productid, quantity) {
-    getpreviewValueInStockindatabase(productid);
-
-    console.log('previewValueInStock: ' + previewValueInStock);
+  async function updateProduct(
+    productid,
+    quantity,
+    key,
+    countInStock,
+    resolve,
+  ) {
+    console.log(' previewValueInStock2: ' + countInStock);
     const userDocRef = doc(db, 'shoes', productid);
     await updateDoc(userDocRef, {
-      countInStock: previewValueInStock + quantity,
+      countInStock: countInStock + quantity,
     });
+
+    deleteCartProduct(key, resolve);
+    resolve();
   }
   const renderItem = data => (
     <Pressable>
@@ -98,8 +110,14 @@ export default function CartItem(props) {
   const renderHiddenItem = (data, rowMap) => (
     <Pressable
       onPress={() => {
-        deleteCartProduct(data.item.key);
-        udateProduct(data.item.productid, data.item.quantity);
+        new Promise(resolve => {
+          actions(
+            data.item.productid,
+            data.item.quantity,
+            data.item.key,
+            resolve,
+          );
+        });
       }}
       w={50}
       roundedTopRight={10}

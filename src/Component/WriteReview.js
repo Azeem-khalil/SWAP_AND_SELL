@@ -64,9 +64,7 @@ const WriteReview = props => {
     var min = new Date().getMinutes(); //Current Minutes
     var sec = new Date().getSeconds(); //Current Seconds
     if (isMounted) {
-      setCurrentDate(
-        date + '/' + month + '/' + year + ' ' + hours + ':' + min + ':' + sec,
-      );
+      setCurrentDate(date + '/' + month + '/' + year);
     }
     return () => {
       isMounted = false;

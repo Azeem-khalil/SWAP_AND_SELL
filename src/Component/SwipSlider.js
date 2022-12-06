@@ -1,6 +1,6 @@
-import { Box, Image } from 'native-base';
+import { Box, Image, Text } from 'native-base';
 import React from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import Swiper from 'react-native-web-swiper';
 
 export default function SwipSlider(props) {
@@ -11,9 +11,9 @@ export default function SwipSlider(props) {
         loop
         timeout={4.5}
         controlsProps={{
-          dotActiveStyle: { backgroundColor: 'red' },
+          dotActiveStyle: { backgroundColor: 'black' },
           cellsContent: {
-            'bottom-left': <Text>SOME LOGO</Text>,
+            'bottom-left': <Text color="#5b21b6">SWAP AND SELL</Text>,
           },
         }}>
         <Box
@@ -23,7 +23,7 @@ export default function SwipSlider(props) {
             justifyContent: 'center',
           }}>
           <Image
-            source={{ uri: props.Image }}
+            source={{ uri: props.Image.image1 }}
             alt={'product.Name'}
             w="full"
             h={300}
@@ -37,7 +37,13 @@ export default function SwipSlider(props) {
             justifyContent: 'center',
             backgroundColor: 'rgba(20,200,20,0.3)',
           }}>
-          <Text>Slide 2</Text>
+          <Image
+            source={{ uri: props.Image.image2 }}
+            alt={'product.Name'}
+            w="full"
+            h={300}
+            resizeMode="contain"
+          />
         </Box>
         <Box
           style={{
@@ -46,7 +52,7 @@ export default function SwipSlider(props) {
             justifyContent: 'center',
           }}>
           <Image
-            source={{ uri: props.Image }}
+            source={{ uri: props.Image.image3 }}
             alt={'product.Name'}
             w="full"
             h={300}

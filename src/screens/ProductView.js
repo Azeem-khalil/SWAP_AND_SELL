@@ -67,6 +67,7 @@ const ProductView = ({ route }) => {
   const [checkCart, setcheckCart] = useState(true);
   const [currentDate, setCurrentDate] = useState('');
   const [quantity, setquantity] = useState('');
+  const [reviewdata, setreviewdata] = useState([]);
 
   const toast = useToast();
   const navigation = useNavigation();
@@ -111,7 +112,43 @@ const ProductView = ({ route }) => {
       console.error('Error check document: ', e);
     }
   }
+  useEffect(() => {
+    let isMounted = true;
 
+    const fetchData = async () => {
+      console.log('press Button: ');
+
+      try {
+        const qc = query(
+          collection(db, 'shoesReviews'),
+          where('productid', '==', product.key),
+          where('userid', '==', user.uid),
+        );
+
+        const unsubscribe = await onSnapshot(qc, querySnapshot => {
+          const reviewshoesData = [];
+          querySnapshot.forEach(doc => {
+            console.log('indoc: ' + `${doc.id} => ${doc.data()}`);
+
+            reviewshoesData.push({
+              ...doc.data(),
+              key: doc.id,
+            });
+          });
+          if (isMounted) setreviewdata(reviewshoesData);
+          console.log('reviewshoesData ' + reviewshoesData);
+        });
+      } catch (e) {
+        console.error('Error review document: ', e);
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [product.key, user.uid]);
   function checkAlreadyReview() {
     console.log('checkAlreadyReview Button: ', user.uid);
 
@@ -138,14 +175,14 @@ const ProductView = ({ route }) => {
 
   function checkReviewfun() {
     checkUserPlaceOrderThisProduct();
-    if (checkUserOrderThisProduct) {
-      console.log('checkUserOrderThisProduct: ', checkUserOrderThisProduct);
+    //if (checkUserOrderThisProduct) {
+    // console.log('checkUserOrderThisProduct: ', checkUserOrderThisProduct);
 
-      checkAlreadyReview();
-      if (!checkReview) {
-        return <WriteReview productArray={product} />;
-      }
+    checkAlreadyReview();
+    if (!checkReview) {
+      return <WriteReview productArray={product} />;
     }
+    //}
   }
 
   async function ADDtoCART() {
@@ -160,6 +197,8 @@ const ProductView = ({ route }) => {
         image: product.image1,
         userid: user.uid,
         date: currentDate,
+        size: product.size,
+        category: product.category,
       });
       upadteCurrentProductCountInStock();
       setcheckCart(true);
@@ -179,7 +218,7 @@ const ProductView = ({ route }) => {
   }
   async function upadteCurrentProductCountInStock() {
     const Ref = doc(db, 'shoes', product.key);
-    //console.log('before numreview: ' + product.numReview);
+    console.log('before numreview: ' + product.countInStock);
     // Set the "capital" field of the city 'DC'
     await updateDoc(Ref, {
       countInStock: product.countInStock - quantity,
@@ -187,7 +226,13 @@ const ProductView = ({ route }) => {
   }
   return (
     <Box safeArea flex={1} bg={'#ffffff'}>
-      <SwipSlider Image={product.image1} />
+      <SwipSlider
+        Image={{
+          image1: product.image1,
+          image2: product.image2,
+          image3: product.image3,
+        }}
+      />
       <Box safeArea flex={1} bg={'#ffffff'}>
         <ScrollView px={5} showsVerticalScrollIndicator={false}>
           <Heading fontSize={20} bold mt={3} mb={2} lineHeight={22}>
@@ -229,7 +274,12 @@ const ProductView = ({ route }) => {
                       ${product.price}
                     </Heading>
                   </HStack>
-
+                  <Text mt={2} fontSize={12} lineHeight={24}>
+                    Size: {product.size}
+                  </Text>
+                  <Text mt={2} fontSize={12} lineHeight={24}>
+                    Category: {product.category}
+                  </Text>
                   <Text mt={2} fontSize={12} lineHeight={24}>
                     {product.description}
                   </Text>
@@ -250,29 +300,14 @@ const ProductView = ({ route }) => {
                 </Heading>
               )}
             </HStack>
-            {/* <FormControl>
-            <FormControl.Label _text={{ fontSize: '12px', fontWeight: 'bold' }}>
-              size
-            </FormControl.Label>
-            <Select
-              minWidth="00"
-              accessibilityLabel="Choose size"
-              placeholder="Choose size"
-              mt="1"
-              py={4}
-              _selectedItem={{
-                endIcon: <CheckIcon size={5} />,
-              }}
-              selectedValue={size}
-              onValueChange={e => setsize(e)}>
-              <Select.Item label="6 " value={1} />
-              <Select.Item label="8" value={2} />
-              <Select.Item label="10" value={3} />
-              <Select.Item label="11" value={4} />
-            </Select>
-          </FormControl> */}
-
-            <Review numReview={product.numReview} reviewArray={reviewArray} />
+            {/* {reviewdata.length > 0 ? (
+              <Review numReview={product.numReview} reviewArray={reviewdata} />
+            ) : (
+              <Heading bold color="#5b21b6" fontSize={19}>
+                No Review
+              </Heading>
+            )} */}
+            <Review numReview={product.numReview} reviewArray={reviewdata} />
 
             {checkReviewfun()}
           </Box>
