@@ -91,14 +91,13 @@ const Addproduct = () => {
       const docRef = await addDoc(collection(db, 'BooksAds'), {
         userName: user.displayName,
         uid: user.uid,
+        email: user.email,
         BookName: formData.BookName,
         description: formData.description,
         need: formData.need,
         PhoneNumber: formData.PhoneNumber,
         image: formData.image,
         location: formData.location,
-        rating: 2,
-        numReview: 6,
         adfav: false,
         date: currentDate,
       });

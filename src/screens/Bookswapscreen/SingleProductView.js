@@ -37,32 +37,6 @@ import { async } from '@firebase/util';
 import { auth, db } from '../../Component/DataBase/firebase';
 
 const SingleProductView = ({ route }) => {
-  const reviewArray = [
-    {
-      _id: 1,
-      name: 'Balaj',
-      ReviewRate: 3,
-      date: 'Jan 12 2020',
-      message:
-        ' PS C:UsersAZEEMSWAP_AND_SELL react-native run-android info Running jetifier',
-    },
-    {
-      _id: 4,
-      name: 'azeem',
-      ReviewRate: 1,
-      date: 'Jan 12 2020',
-      message:
-        ' PS C:UsersAZEEMSWAP_AND_SELL react-native run-android info Running jetifier',
-    },
-    {
-      _id: 2,
-      name: 'mubeen',
-      ReviewRate: 5,
-      date: 'Jan 12 2020',
-      message:
-        ' PS C:UsersAZEEMSWAP_AND_SELL react-native run-android info Running jetifier',
-    },
-  ];
   const [size, setsize] = useState('');
   const [checkReview, setcheckReview] = useState(false);
   const [flagFavorite, setflagFavorite] = useState(true);
@@ -74,7 +48,7 @@ const SingleProductView = ({ route }) => {
     useState(false);
   const [currentDate, setCurrentDate] = useState('');
   const [quantity, setquantity] = useState('');
-  const [Customuserid, setCustomuserid] = useState('');
+  //const [Customuserid, setCustomuserid] = useState('');
 
   const toast = useToast();
   const navigation = useNavigation();
@@ -98,6 +72,44 @@ const SingleProductView = ({ route }) => {
       isMounted = false;
     };
   }, []);
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchData = async () => {
+      console.log('press Button: ');
+
+      try {
+        const qc = query(
+          collection(db, 'userReview'),
+          where('aidUemail', '==', product.email),
+        );
+
+        const unsubscribe = await onSnapshot(qc, querySnapshot => {
+          const reviewuserData = [];
+          querySnapshot.forEach(doc => {
+            console.log(
+              'reviewuserData doc.id: ' + `${doc.id} => ${doc.data()}`,
+            );
+
+            reviewuserData.push({
+              ...doc.data(),
+              key: doc.id,
+            });
+          });
+          if (isMounted) setreviewdata(reviewuserData);
+          console.log('reviewuserData: ' + reviewuserData);
+        });
+      } catch (e) {
+        console.error('Error review document: ', e);
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [product.email]);
   async function deleteAction(key) {
     deleteDoc(doc(db, 'BooksAds', key));
     const qc = query(
@@ -234,13 +246,12 @@ const SingleProductView = ({ route }) => {
     const docRef = await addDoc(collection(db, 'favorite'), {
       BooksAdsid: product.key,
       BookName: product.BookName,
+      email: product.email,
       description: product.description,
       need: product.need,
       PhoneNumber: product.PhoneNumber,
       image: product.image,
       location: product.location,
-      rating: product.rating,
-      numReview: product.numReview,
       useridfav: user.uid,
       uid: product.uid,
       adfav: true,
@@ -252,91 +263,52 @@ const SingleProductView = ({ route }) => {
     navigation.navigate('Favourite');
   }
 
-  useEffect(() => {
-    let isMounted = true;
-    const user = auth.currentUser;
+  // useEffect(() => {
+  //   let isMounted = true;
+  //   const user = auth.currentUser;
 
-    const fetchData = async () => {
-      console.log('press Button: ');
+  //   const fetchData = async () => {
+  //     console.log('press Button: ', user.email);
 
-      try {
-        const qc = query(
-          collection(db, 'userReview'),
-          where('aidUid', '==', product.uid),
-        );
+  //     try {
+  //       const qc = query(
+  //         collection(db, 'user'),
+  //         where('email', '==', user.email),
+  //       );
 
-        const unsubscribe = await onSnapshot(qc, querySnapshot => {
-          const reviewuserData = [];
-          querySnapshot.forEach(doc => {
-            console.log(
-              'reviewuserData doc.id: ' + `${doc.id} => ${doc.data()}`,
-            );
+  //       const unsubscribe = await onSnapshot(qc, querySnapshot => {
+  //         const userData = [];
+  //         querySnapshot.forEach(doc => {
+  //           console.log(
+  //             'doc.id userData.key: ' + `${doc.id} => ${doc.data().email}`,
+  //           );
 
-            reviewuserData.push({
-              ...doc.data(),
-              key: doc.id,
-            });
-          });
-          if (isMounted) setreviewdata(reviewuserData);
-          console.log('reviewuserData: ' + reviewuserData);
-        });
-      } catch (e) {
-        console.error('Error review document: ', e);
-      }
-    };
+  //           userData.push({
+  //             ...doc.data(),
+  //             key: doc.id,
+  //           });
+  //           setCustomuserid(doc.id);
+  //         });
+  //         if (isMounted) console.log('userData.key ');
+  //       });
+  //     } catch (e) {
+  //       console.error('Error userData document: ', e);
+  //     }
+  //   };
 
-    fetchData();
+  //   fetchData();
 
-    return () => {
-      isMounted = false;
-    };
-  }, [product.uid]);
-  useEffect(() => {
-    let isMounted = true;
-    const user = auth.currentUser;
-
-    const fetchData = async () => {
-      console.log('press Button: ', user.email);
-
-      try {
-        const qc = query(
-          collection(db, 'user'),
-          where('email', '==', user.email),
-        );
-
-        const unsubscribe = await onSnapshot(qc, querySnapshot => {
-          const userData = [];
-          querySnapshot.forEach(doc => {
-            console.log(
-              'doc.id userData.key: ' + `${doc.id} => ${doc.data().email}`,
-            );
-
-            userData.push({
-              ...doc.data(),
-              key: doc.id,
-            });
-            setCustomuserid(doc.id);
-          });
-          if (isMounted) console.log('userData.key ');
-        });
-      } catch (e) {
-        console.error('Error userData document: ', e);
-      }
-    };
-
-    fetchData();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  //   return () => {
+  //     isMounted = false;
+  //   };
+  // }, []);
   function checkAlreadyReview() {
     console.log('checkAlreadyReview Button: ', user.uid);
     try {
       const qc = query(
         collection(db, 'userReview'),
-        where('aidUid', '==', product.uid),
-        where('uid', '==', user.uid),
+        where('aidUemail', '==', product.email),
+        where('email', '==', user.email),
       );
 
       const unsubscribe = onSnapshot(qc, querySnapshot => {
@@ -354,15 +326,10 @@ const SingleProductView = ({ route }) => {
   }
 
   function checkReviewfun() {
-    //checkUserPlaceOrderThisProduct();
-    //if (checkUserOrderThisProduct) {
-    // console.log('checkUserOrderThisProduct: ', checkUserOrderThisProduct);
-
     checkAlreadyReview();
     if (!checkReview) {
       return <WriteReviewUserBook productArray={product} />;
     }
-    //}
   }
 
   return (
@@ -411,22 +378,11 @@ const SingleProductView = ({ route }) => {
               {checkFavoritefun()}
               {checkDelteFun(product.key)}
             </Box>
-            <Heading bold fontSize={15} mt={7}>
-              User Review
-            </Heading>
-            <Box>
-              <HStack space={0.5} alignItems="center">
-                <Rating
-                  ratingCount={5}
-                  imageSize={10}
-                  startingValue={product.rating}
-                />
-              </HStack>
-            </Box>
 
             <ReviewUserBook
               numReview={product.numReview}
               reviewArray={reviewdata}
+              productEmail={product.email}
             />
             {checkReviewfun()}
           </Box>
@@ -437,5 +393,3 @@ const SingleProductView = ({ route }) => {
 };
 
 export default SingleProductView;
-
-const styles = StyleSheet.create({});

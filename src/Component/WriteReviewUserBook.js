@@ -34,7 +34,12 @@ const WriteReviewUserBook = props => {
   const [date, setdate] = useState('');
   const [userName, setuserName] = useState('');
   const [userid, setuserid] = useState('');
-  const [Customuserid, setCustomuserid] = useState('');
+  const [customUserid, setcustomUserid] = useState('');
+  const [star1, setStar1] = useState(0);
+  const [star2, setStar2] = useState(0);
+  const [star3, setStar3] = useState(0);
+  const [star4, setStar4] = useState(0);
+  const [star5, setStar5] = useState(0);
 
   const toast = useToast();
   const product = props.productArray;
@@ -92,23 +97,28 @@ const WriteReviewUserBook = props => {
       try {
         const qc = query(
           collection(db, 'user'),
-          where('email', '==', user.email),
+          where('email', '==', product.email),
         );
 
         const unsubscribe = await onSnapshot(qc, querySnapshot => {
-          const userData = [];
           querySnapshot.forEach(doc => {
-            console.log(
-              'doc.id userData.key: ' + `${doc.id} => ${doc.data().email}`,
-            );
-
-            userData.push({
-              ...doc.data(),
-              key: doc.id,
-            });
-            setCustomuserid(doc.id);
+            if (isMounted) {
+              console.log(
+                'doc.id userData.key: ' + `${doc.id} => ${doc.data().email}`,
+              );
+              setStar1(doc.data().star1);
+              setStar2(doc.data().star2);
+              setStar3(doc.data().star3);
+              setStar4(doc.data().star4);
+              setStar5(doc.data().star5);
+              setcustomUserid(doc.id);
+              console.log('userData.keyvvvv ');
+            }
           });
-          if (isMounted) console.log('userData.key ');
+          if (isMounted) {
+            // setcustomUser(userData);
+            console.log('userData.keyvvvv ');
+          }
         });
       } catch (e) {
         console.error('Error userData document: ', e);
@@ -120,23 +130,30 @@ const WriteReviewUserBook = props => {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [product.email]);
 
-  // async function upadteCurrentProductReviewNum() {
-  //   const Ref = doc(db, 'user', Customuserid); //need query
-  //   //console.log('before numreview: ' + Customuserid.userReview);
-  //   // Set the "capital" field of the city 'DC'
-  //   await updateDoc(Ref, {
-  //     userReview: 1 + Customuserid.userReview,
-  //     // rating:
-  //     //   (product.star1Review +
-  //     //     product.star2Review * 2 +
-  //     //     product.star3Review * 3 +
-  //     //     product.star4Review * 4 +
-  //     //     product.star5Review * 5) /
-  //     //   (1 + product.numReview), //WRk
-  //   });
-  // }
+  async function updateCurrentAidUserReview(star1, star2, star3, star4, star5) {
+    const Ref = doc(db, 'user', customUserid);
+    //console.log(' numreview: ' + numReview);
+    // Set the "capital" field of the city 'DC'
+    console.log('after star: ' + star1 + star2 + star3 + star4 + star5);
+    const scoreTotal =
+      star1 * 1 + star2 * 2 + star3 * 3 + star4 * 4 + star5 * 5;
+    const responseTotal = star1 + star2 + star3 + star4 + star5;
+    const scorating = scoreTotal / responseTotal;
+    console.log('scoreTotal: ' + scoreTotal);
+    console.log('responseTotal: ' + responseTotal);
+    console.log('scorating: ' + scorating);
+
+    await updateDoc(Ref, {
+      rating: scorating,
+      star1: star1,
+      star2: star2,
+      star3: star3,
+      star4: star4,
+      star5: star5,
+    });
+  }
   async function addproductReview() {
     console.log(
       '  userName:',
@@ -153,14 +170,28 @@ const WriteReviewUserBook = props => {
     try {
       const docRef = await addDoc(collection(db, 'userReview'), {
         userName: userName,
-        uid: userauth.uid,
-        aidUid: product.uid,
+        email: userauth.email,
+        aidUemail: product.email,
         commment: comment,
         rating: rating,
         date: currentDate,
       });
-      stateReset();
-      console.log('Document written with ID: ' + docRef.id);
+      let star = [star1, star2, star3, star4, star5];
+      if (rating === 1) {
+        star[0] = star[0] + 1;
+      } else if (rating === 2) {
+        star[1] = star[1] + 1;
+      } else if (rating === 3) {
+        star[2] = star[2] + 1;
+      } else if (rating === 4) {
+        star[3] = star[3] + 1;
+      } else if (rating === 5) {
+        star[4] = star[4] + 1;
+      }
+      updateCurrentAidUserReview(star[0], star[1], star[2], star[3], star[4]);
+      //stateReset();
+      console.log('after star: ' + star[0], star[1], star[2], star[3], star[4]);
+
       console.log('Document  userid: ' + userid);
     } catch (e) {
       console.error('Error adding document: ', e);

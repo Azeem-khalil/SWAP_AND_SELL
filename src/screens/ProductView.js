@@ -65,27 +65,7 @@ const ProductView = ({ route }) => {
       isMounted = false;
     };
   }, []);
-  function checkUserPlaceOrderThisProduct() {
-    console.log('checkUserPlaceOrderThisProduct Button: ');
 
-    try {
-      const qc = query(
-        collection(db, 'placedOrder'),
-        where('key', '==', product.key),
-      );
-      const unsubscribe = onSnapshot(qc, querySnapshot => {
-        var Data = false;
-        querySnapshot.forEach(doc => {
-          console.log('checkUserOrderThisProduct  ' + doc.id);
-          Data = true;
-        });
-        setcheckUserOrderThisProduct(Data);
-        console.log('checkUserOrderThisProduct ' + Data);
-      });
-    } catch (e) {
-      console.error('Error check placedOrder : ', e);
-    }
-  }
   useEffect(() => {
     let isMounted = true;
 
@@ -123,6 +103,29 @@ const ProductView = ({ route }) => {
       isMounted = false;
     };
   }, [product.key, user.uid]);
+  function checkProductDeliveredOrNot(item, index, arr) {
+    if (item.productid === product.key) {
+      console.log('checkUserPlaceOrderThisProduct myfunctn: ' + item.productid);
+      setcheckUserOrderThisProduct(true);
+    }
+  }
+  function checkUserPlaceOrderThisProduct() {
+    console.log('checkUserPlaceOrderThisProduct Button: ');
+
+    try {
+      const qc = query(
+        collection(db, 'placedOrder'),
+        where('uid', '==', user.uid),
+      );
+      const unsubscribe = onSnapshot(qc, querySnapshot => {
+        querySnapshot.forEach(doc => {
+          doc.data().products.forEach(checkProductDeliveredOrNot);
+        });
+      });
+    } catch (e) {
+      console.error('Error check placedOrder : ', e);
+    }
+  }
   function checkAlreadyReview() {
     console.log('checkAlreadyReview Button: ', user.uid);
 
@@ -149,14 +152,12 @@ const ProductView = ({ route }) => {
 
   function checkReviewfun() {
     checkUserPlaceOrderThisProduct();
-    //if (checkUserOrderThisProduct) {
-    // console.log('checkUserOrderThisProduct: ', checkUserOrderThisProduct);
-
-    // checkAlreadyReview();
-    // if (!checkReview) {
-    //   return <WriteReview productArray={product} />;
-    // }
-    //}
+    if (checkUserOrderThisProduct) {
+      checkAlreadyReview();
+      if (!checkReview) {
+        return <WriteReview productArray={product} />;
+      }
+    }
   }
 
   async function ADDtoCART() {

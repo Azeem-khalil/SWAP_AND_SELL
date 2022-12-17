@@ -35,12 +35,6 @@ const WriteReview = props => {
   const [star4, setStar4] = useState(product.star4);
   const [star5, setStar5] = useState(product.star5);
 
-  function stateReset() {
-    const empty = '';
-    setrating(empty);
-    setcomment(empty);
-    setdate(empty);
-  }
   useEffect(() => {
     let isMounted = true;
     console.log('in useeffect user ');

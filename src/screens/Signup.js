@@ -84,10 +84,6 @@ const Signup = ({ navigation }) => {
         console.log('log error ' + auth.currentUser);
 
         sendEmailVerification(user, actionCodeSettings).then(async () => {
-          // Email verification sent!
-          // ...
-          //});
-          // sendEmailVerification(user).then(async () => {
           await updateProfile(user, {
             displayName: name,
           });
@@ -97,8 +93,12 @@ const Signup = ({ navigation }) => {
             address: '',
             phoneNumber: '',
             profileImage: null,
-            userReview: 0,
             rating: 0,
+            star1: 0,
+            star2: 0,
+            star3: 0,
+            star4: 0,
+            star5: 0,
           });
           setSubmitButtonDisabled(false);
           //navigation.navigate('Login');
