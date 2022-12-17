@@ -34,32 +34,6 @@ import {
 import { async } from '@firebase/util';
 
 const ProductView = ({ route }) => {
-  const reviewArray = [
-    {
-      _id: 1,
-      name: 'Balaj',
-      ReviewRate: 3,
-      date: 'Jan 12 2020',
-      message:
-        ' PS C:UsersAZEEMSWAP_AND_SELL react-native run-android info Running jetifier',
-    },
-    {
-      _id: 4,
-      name: 'azeem',
-      ReviewRate: 1,
-      date: 'Jan 12 2020',
-      message:
-        ' PS C:UsersAZEEMSWAP_AND_SELL react-native run-android info Running jetifier',
-    },
-    {
-      _id: 2,
-      name: 'mubeen',
-      ReviewRate: 5,
-      date: 'Jan 12 2020',
-      message:
-        ' PS C:UsersAZEEMSWAP_AND_SELL react-native run-android info Running jetifier',
-    },
-  ];
   const [size, setsize] = useState('');
   const [checkReview, setcheckReview] = useState(false);
   const [checkUserOrderThisProduct, setcheckUserOrderThisProduct] =
@@ -96,8 +70,8 @@ const ProductView = ({ route }) => {
 
     try {
       const qc = query(
-        collection(db, 'padingOrder'),
-        where('products', 'in', [[product.key]]),
+        collection(db, 'placedOrder'),
+        where('key', '==', product.key),
       );
       const unsubscribe = onSnapshot(qc, querySnapshot => {
         var Data = false;
@@ -106,10 +80,10 @@ const ProductView = ({ route }) => {
           Data = true;
         });
         setcheckUserOrderThisProduct(Data);
-        console.log('Data ' + Data);
+        console.log('checkUserOrderThisProduct ' + Data);
       });
     } catch (e) {
-      console.error('Error check document: ', e);
+      console.error('Error check placedOrder : ', e);
     }
   }
   useEffect(() => {
@@ -122,13 +96,13 @@ const ProductView = ({ route }) => {
         const qc = query(
           collection(db, 'shoesReviews'),
           where('productid', '==', product.key),
-          where('userid', '==', user.uid),
+          //where('userid', '==', user.uid),
         );
 
         const unsubscribe = await onSnapshot(qc, querySnapshot => {
           const reviewshoesData = [];
           querySnapshot.forEach(doc => {
-            console.log('indoc: ' + `${doc.id} => ${doc.data()}`);
+            console.log('indoc: ' + `${doc.id} => ${doc.data().rating}`);
 
             reviewshoesData.push({
               ...doc.data(),
@@ -178,10 +152,10 @@ const ProductView = ({ route }) => {
     //if (checkUserOrderThisProduct) {
     // console.log('checkUserOrderThisProduct: ', checkUserOrderThisProduct);
 
-    checkAlreadyReview();
-    if (!checkReview) {
-      return <WriteReview productArray={product} />;
-    }
+    // checkAlreadyReview();
+    // if (!checkReview) {
+    //   return <WriteReview productArray={product} />;
+    // }
     //}
   }
 
@@ -245,6 +219,9 @@ const ProductView = ({ route }) => {
                 imageSize={10}
                 startingValue={product.rating}
               />
+              {/* <Text mt={2} fontSize={12} lineHeight={24}>
+                {product.rating}
+              </Text> */}
             </HStack>
           </Box>
 
@@ -271,7 +248,7 @@ const ProductView = ({ route }) => {
                     />
                     <Spacer />
                     <Heading bold color="#000000" fontSize={19}>
-                      ${product.price}
+                      RS/-{product.price}
                     </Heading>
                   </HStack>
                   <Text mt={2} fontSize={12} lineHeight={24}>
@@ -300,13 +277,7 @@ const ProductView = ({ route }) => {
                 </Heading>
               )}
             </HStack>
-            {/* {reviewdata.length > 0 ? (
-              <Review numReview={product.numReview} reviewArray={reviewdata} />
-            ) : (
-              <Heading bold color="#5b21b6" fontSize={19}>
-                No Review
-              </Heading>
-            )} */}
+
             <Review numReview={product.numReview} reviewArray={reviewdata} />
 
             {checkReviewfun()}

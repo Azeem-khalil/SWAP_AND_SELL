@@ -81,7 +81,11 @@ const Cart = () => {
         </Text>
       </Center>
       {console.log('CartData.length: ' + CartData.length)}
-      {isEmpty ? <CartItem CartData={CartData} Total={Total} /> : <EmptyCart />}
+      {isEmpty ? (
+        <CartItem CartData={CartData} Total={Total} />
+      ) : (
+        <EmptyCart text="Cart" />
+      )}
     </Box>
   );
 };

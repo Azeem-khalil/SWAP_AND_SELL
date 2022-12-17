@@ -11,7 +11,7 @@ import {
 } from 'native-base';
 import FontAwesome from 'react-native-vector-icons/FontAwesome5';
 import { Rating, AirbnbRating } from 'react-native-ratings';
-const Review = props => {
+const ReviewUserBook = props => {
   return (
     <Box my={9} flex={1}>
       <Heading bold fontSize={15} mb={2}>
@@ -63,4 +63,4 @@ const Review = props => {
   );
 };
 
-export default Review;
+export default ReviewUserBook;

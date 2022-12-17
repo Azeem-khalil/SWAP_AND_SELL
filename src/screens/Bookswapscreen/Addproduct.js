@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-  VStack,
   Input,
-  Stack,
   FormControl,
   Heading,
   Box,
@@ -12,15 +10,8 @@ import {
   ScrollView,
   useToast,
 } from 'native-base';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import {
-  View,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  Image,
-  PermissionsAndroid,
-} from 'react-native';
+import { launchImageLibrary } from 'react-native-image-picker';
+import { StyleSheet, Text, TouchableOpacity, Image } from 'react-native';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -30,7 +21,7 @@ import { useNavigation } from '@react-navigation/native';
 const Addproduct = () => {
   const [cameraPhoto, setCameraPhoto] = useState();
   const [galleryPhoto, setGalleryPhoto] = useState();
-  const [checkAddBookAd, setcheckAddBookAd] = useState(true);
+  const [checkAddBookAd, setcheckAddBookAd] = useState(false);
   const toast = useToast();
   const user = auth.currentUser;
 
@@ -61,22 +52,6 @@ const Addproduct = () => {
       isMounted = false;
     };
   }, []);
-  const openCamera = async () => {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.CAMERA,
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        const result = await launchCamera(options);
-        setCameraPhoto(result.assets[0].uri);
-        console.log('You can use the camera');
-      } else {
-        console.log('Camera permission denied');
-      }
-    } catch (err) {
-      console.warn(err);
-    }
-  };
 
   const openGallery = async () => {
     const result = await launchImageLibrary(options);
@@ -84,8 +59,8 @@ const Addproduct = () => {
   };
 
   const validate = () => {
-    if (formData.name === undefined) {
-      setErrors({ ...errors, name: 'Name is required' });
+    if (formData.PhoneNumber === undefined) {
+      setErrors({ ...errors, name: 'PhoneNumber is required' });
       return false;
     } else if (formData.name.length < 3) {
       setErrors({ ...errors, name: 'Name is too short' });
@@ -96,15 +71,14 @@ const Addproduct = () => {
   };
   async function AddtoBookAd() {
     if (
-      (checkAddBookAd &&
-        !formData.BookName == '' &&
+      (!formData.BookName == '' &&
         !formData.description == '' &&
         !formData.PhoneNumber == '' &&
         !formData.image == '' &&
         !formData.location == '') ||
       !formData.need == ''
     ) {
-      setcheckAddBookAd(false);
+      setcheckAddBookAd(true);
       toast.show({
         render: () => {
           return (
@@ -128,7 +102,7 @@ const Addproduct = () => {
         adfav: false,
         date: currentDate,
       });
-      setcheckAddBookAd(true);
+      setcheckAddBookAd(false);
 
       //navigation.navigate('Cart');
     } else {
@@ -161,7 +135,15 @@ const Addproduct = () => {
       getDownloadURL(starsRef).then(url => {
         console.log('url! ', url);
         setData({ ...formData, image: url });
-
+        toast.show({
+          render: () => {
+            return (
+              <Box bg="#ffffff" px="2" py="1" rounded="sm" mb={5}>
+                Successfully Upload Image!!
+              </Box>
+            );
+          },
+        });
         // Insert url into an <img> tag to "download"
       });
     });
@@ -279,10 +261,10 @@ const Addproduct = () => {
                   setData({ ...formData, location: value })
                 }
                 InputLeftElement={
-                  <FontAwesome
+                  <Ionicons
                     style={{ marginLeft: 5 }}
                     size={20}
-                    name="phone"
+                    name="location"
                   />
                 }
               />
@@ -302,6 +284,7 @@ const Addproduct = () => {
                 PhoneNumber
               </FormControl.Label>
               <Input
+                type="number"
                 placeholder="PhoneNumber..."
                 onChangeText={value =>
                   setData({ ...formData, PhoneNumber: value })
@@ -338,7 +321,11 @@ const Addproduct = () => {
             <TouchableOpacity onPress={uploadImage} style={styles.button}>
               <Text style={styles.buttonText}>upload Image</Text>
             </TouchableOpacity>
-            <Button onPress={onSubmit} mt="5" colorScheme="cyan">
+            <Button
+              disabled={checkAddBookAd}
+              onPress={onSubmit}
+              mt="5"
+              colorScheme="cyan">
               Submit
             </Button>
           </ScrollView>

@@ -11,9 +11,9 @@ export default function SwipSlider(props) {
         loop
         timeout={4.5}
         controlsProps={{
-          dotActiveStyle: { backgroundColor: 'black' },
+          dotActiveStyle: { backgroundColor: 'red' },
           cellsContent: {
-            'bottom-left': <Text color="#5b21b6">SWAP AND SELL</Text>,
+            'bottom-left': <Text color="#5b21b6">SWAP&SELL</Text>,
           },
         }}>
         <Box
@@ -35,7 +35,6 @@ export default function SwipSlider(props) {
             flex: 1,
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: 'rgba(20,200,20,0.3)',
           }}>
           <Image
             source={{ uri: props.Image.image2 }}

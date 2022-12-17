@@ -17,23 +17,29 @@ import {
 } from 'native-base';
 import FontAwesome from 'react-native-vector-icons/FontAwesome5';
 import { Rating, AirbnbRating } from 'react-native-ratings';
-import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
+import {
+  addDoc,
+  collection,
+  doc,
+  onSnapshot,
+  query,
+  updateDoc,
+  where,
+} from 'firebase/firestore';
 import { auth, db } from './DataBase/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
-const WriteReview = props => {
+const WriteReviewUserBook = props => {
   const [rating, setrating] = useState('');
   const [comment, setcomment] = useState('');
   const [date, setdate] = useState('');
   const [userName, setuserName] = useState('');
   const [userid, setuserid] = useState('');
+  const [Customuserid, setCustomuserid] = useState('');
+
   const toast = useToast();
   const product = props.productArray;
   const [currentDate, setCurrentDate] = useState('');
-  const [star1, setStar1] = useState(product.star1);
-  const [star2, setStar2] = useState(product.star2);
-  const [star3, setStar3] = useState(product.star3);
-  const [star4, setStar4] = useState(product.star4);
-  const [star5, setStar5] = useState(product.star5);
+  const userauth = auth.currentUser;
 
   function stateReset() {
     const empty = '';
@@ -76,77 +82,84 @@ const WriteReview = props => {
       isMounted = false;
     };
   }, []);
-  async function upadteCurrentProductReviewNum(
-    star1,
-    star2,
-    star3,
-    star4,
-    star5,
-  ) {
-    const Ref = doc(db, 'shoes', product.key);
-    console.log(' numreview: ' + product.numReview);
-    // Set the "capital" field of the city 'DC'
-    console.log('after star: ' + star1 + star2 + star3 + star4 + star5);
-    const scoreTotal =
-      star1 * 1 + star2 * 2 + star3 * 3 + star4 * 4 + star5 * 5;
-    const responseTotal = star1 + star2 + star3 + star4 + star5;
-    const scorating = scoreTotal / responseTotal;
-    console.log('scoreTotal: ' + scoreTotal);
-    console.log('responseTotal: ' + responseTotal);
+  useEffect(() => {
+    let isMounted = true;
+    const user = auth.currentUser;
 
-    console.log('scorating: ' + scorating);
+    const fetchData = async () => {
+      console.log('press Button: ', user.email);
 
-    await updateDoc(Ref, {
-      numReview: 1 + product.numReview,
-      rating: scorating,
-      star1: star1,
-      star2: star2,
-      star3: star3,
-      star4: star4,
-      star5: star5,
-    });
-  }
+      try {
+        const qc = query(
+          collection(db, 'user'),
+          where('email', '==', user.email),
+        );
+
+        const unsubscribe = await onSnapshot(qc, querySnapshot => {
+          const userData = [];
+          querySnapshot.forEach(doc => {
+            console.log(
+              'doc.id userData.key: ' + `${doc.id} => ${doc.data().email}`,
+            );
+
+            userData.push({
+              ...doc.data(),
+              key: doc.id,
+            });
+            setCustomuserid(doc.id);
+          });
+          if (isMounted) console.log('userData.key ');
+        });
+      } catch (e) {
+        console.error('Error userData document: ', e);
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // async function upadteCurrentProductReviewNum() {
+  //   const Ref = doc(db, 'user', Customuserid); //need query
+  //   //console.log('before numreview: ' + Customuserid.userReview);
+  //   // Set the "capital" field of the city 'DC'
+  //   await updateDoc(Ref, {
+  //     userReview: 1 + Customuserid.userReview,
+  //     // rating:
+  //     //   (product.star1Review +
+  //     //     product.star2Review * 2 +
+  //     //     product.star3Review * 3 +
+  //     //     product.star4Review * 4 +
+  //     //     product.star5Review * 5) /
+  //     //   (1 + product.numReview), //WRk
+  //   });
+  // }
   async function addproductReview() {
-    console.log('press addproductReview ');
+    console.log(
+      '  userName:',
+      userName,
+      '  userid:',
+      userauth.uid,
+      '  commment:',
+      comment,
+      '  rating:',
+      rating,
+      '  date:',
+      currentDate,
+    );
     try {
-      console.log(
-        ' product.key: ' +
-          product.key +
-          ' username: ' +
-          userName +
-          ' currentDate: ' +
-          currentDate,
-      );
-
-      const docRef = await addDoc(collection(db, 'shoesReviews'), {
+      const docRef = await addDoc(collection(db, 'userReview'), {
         userName: userName,
-        productid: product.key,
-        userid: userid,
+        uid: userauth.uid,
+        aidUid: product.uid,
         commment: comment,
         rating: rating,
         date: currentDate,
       });
-      let star = [star1, star2, star3, star4, star5];
-      if (rating === 1) {
-        star[0] = star1 + 1;
-      } else if (rating === 2) {
-        star[1] = star2 + 1;
-      } else if (rating === 3) {
-        star[2] = star3 + 1;
-      } else if (rating === 4) {
-        star[3] = star4 + 1;
-      } else if (rating === 5) {
-        star[4] = star5 + 1;
-      }
-      upadteCurrentProductReviewNum(
-        star[0],
-        star[1],
-        star[2],
-        star[3],
-        star[4],
-      );
-
-      //stateReset();
+      stateReset();
       console.log('Document written with ID: ' + docRef.id);
       console.log('Document  userid: ' + userid);
     } catch (e) {
@@ -167,6 +180,7 @@ const WriteReview = props => {
       return;
     } else {
       addproductReview();
+      //upadteCurrentProductReviewNum();
       return;
     }
   }
@@ -233,4 +247,4 @@ const WriteReview = props => {
   );
 };
 
-export default WriteReview;
+export default WriteReviewUserBook;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Button, Heading, Image, Text } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
-import { TouchableOpacity } from 'react-native';
+import { ImageBackground, TouchableOpacity } from 'react-native';
 import {
   addDoc,
   collection,
@@ -52,50 +52,69 @@ const MainPage = props => {
     console.log('datadta');
   }
   return (
-    <Box
-      flex={1}
-      style={{ justifyContent: 'center', alignItems: 'center' }}
-      bg={'#f8f8ff'}>
+    <Box flex={1} bg={'#d1d5db'}>
       {props.EmailVerified ? (
         <>
-          <Box bgColor={'#fb923c'} w="full" alignItems="center">
+          <Box bgColor={'#e11d48'} w="full" alignItems="center">
             <Heading mt={10} fontSize={40} color="white" fontStyle={'italic'}>
               SWAP & SeLL
             </Heading>
           </Box>
-          <TouchableOpacity
+          {/* <ImageBackground
+            source={{
+              uri: 'https://img.freepik.com/free-photo/smiling-attractive-woman-stylish-colorful-outfit-jumping-with-shopping-bags-pink-yellow-background-polo-neck-striped-mini-skirt-shopaholic-sale-fashion-summer-trend_285396-2421.jpg',
+            }}
+            resizeMode="cover"
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+            }}> */}
+          <Box
             flex={1}
-            style={{ justifyContent: 'center', alignItems: 'center' }}
-            //onPress={Getproduct}
-            onPress={() => navigation.navigate('BottomNavShoes')}>
-            <Image
-              mt={10}
-              rounded={'md'}
-              source={{
-                uri: 'https://images.unsplash.com/photo-1549298916-f52d724204b4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDN8fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=500&q=60',
+            style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <TouchableOpacity
+              flex={1}
+              style={{
+                alignItems: 'center',
+                marginTop: 10,
+                opacity: 0.9,
               }}
-              alt={'shoes'}
-              size={'2xl'}
-              w={80}
-              resizeMode="contain"
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            flex={1}
-            style={{ justifyContent: 'center', alignItems: 'center' }}
-            onPress={() => navigation.navigate('BottomNavBook')}>
-            <Image
-              mt={10}
-              rounded={'md'}
-              source={{
-                uri: 'https://images.unsplash.com/photo-1549298916-f52d724204b4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1yZWxhdGVkfDN8fHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=500&q=60',
-              }}
-              alt={'shoes'}
-              size={'2xl'}
-              w={80}
-              resizeMode="contain"
-            />
-          </TouchableOpacity>
+              onPress={() => navigation.navigate('BottomNavShoes')}>
+              {/* <Text color={'#000000'} fontSize={25} bold fontStyle={'italic'}>
+                  Book Swap
+                </Text> */}
+              <Image
+                rounded={'lg'}
+                source={{
+                  uri: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8c2hvZXN8ZW58MHx8MHx8&w=1000&q=80',
+                }}
+                style={{ opacity: 0.9 }}
+                alt={'shoes'}
+                size={'2xl'}
+                w={'sm'}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              flex={1}
+              style={{ alignItems: 'center', marginTop: 20 }}
+              onPress={() => navigation.navigate('BottomNavBook')}>
+              {/* <Text color={'#000000'} fontSize={25} bold>
+                Book Swap
+              </Text> */}
+              <Image
+                rounded={'lg'}
+                source={{
+                  uri: 'https://media.istockphoto.com/id/1273544978/photo/open-book-with-pages-on-a-red-background.jpg?s=612x612&w=0&k=20&c=38NYzQmRrACHMIggxFrPMm4bdux0-sSPBYcJPMEP1rY=',
+                }}
+                alt={'shoes'}
+                size={'2xl'}
+                w={'sm'}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
+          </Box>
+          {/* </ImageBackground> */}
         </>
       ) : (
         <Box

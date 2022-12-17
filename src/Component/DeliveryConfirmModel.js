@@ -122,15 +122,15 @@ const DeliveryConfirmModel = props => {
             <VStack space={3}>
               <HStack alignItems="center" justifyContent="space-between">
                 <Text fontWeight="medium">Sub Total</Text>
-                <Text color="blueGray.400">{Total}</Text>
+                <Text color="blueGray.400">RS/-{Total}</Text>
               </HStack>
               <HStack alignItems="center" justifyContent="space-between">
                 <Text fontWeight="medium">Tax</Text>
-                <Text color="blueGray.400">0.0</Text>
+                <Text color="blueGray.400">RS/-0.0</Text>
               </HStack>
               <HStack alignItems="center" justifyContent="space-between">
                 <Text fontWeight="medium">Total Amount</Text>
-                <Text color="green.500">{Total}</Text>
+                <Text color="green.500">RS/-{Total}</Text>
               </HStack>
             </VStack>
           </Modal.Body>

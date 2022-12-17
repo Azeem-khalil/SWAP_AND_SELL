@@ -11,8 +11,6 @@ const Home = () => {
   const navigation = useNavigation();
   return (
     <Box flex={1} bg={'#f8f8ff'}>
-      {/* <CustomHeader /> */}
-      {/* {<Header filteredDataSource={filteredDataSource} />} */}
       <Box>
         <HStack
           space={3}
@@ -24,18 +22,17 @@ const Home = () => {
           safeArea>
           <Input
             onChangeText={text => setSearch(text)}
-            value={search}
             placeholder="Nike, Adidas...."
-            w="85%"
-            h={12}
+            value={search}
+            w="90%"
             bg={'#ffffff'}
             type="search"
             variant={'filled'}
-            borderRadius="10"
+            borderRadius="3xl"
             _focus={{ bg: '#ffffff' }}
-            fontSize={20}
+            fontSize={12}
             InputLeftElement={
-              <EvilIcons style={{ marginLeft: 5 }} size={30} name="search" />
+              <EvilIcons style={{ marginLeft: 5 }} size={20} name="search" />
             }
           />
           <Pressable ml={3} onPress={() => navigation.navigate('Cart')}>

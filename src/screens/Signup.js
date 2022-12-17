@@ -97,6 +97,8 @@ const Signup = ({ navigation }) => {
             address: '',
             phoneNumber: '',
             profileImage: null,
+            userReview: 0,
+            rating: 0,
           });
           setSubmitButtonDisabled(false);
           //navigation.navigate('Login');

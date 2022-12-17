@@ -73,12 +73,16 @@ const Favourite = () => {
     <Box flex={1} safeAreaTop bg={'#f8f8ff'}>
       <Center h={20} py={5} bgColor={'#f8f8ff'}>
         <Text color={'#000000'} fontSize={25} bold>
-          Cart
+          Favourite
         </Text>
       </Center>
       {console.log('FavouriteData.length: ' + FavouriteData.length)}
 
-      {flag ? <FavouritIteme FavouriteData={FavouriteData} /> : <EmptyCart />}
+      {flag ? (
+        <FavouritIteme FavouriteData={FavouriteData} />
+      ) : (
+        <EmptyCart text="Favourite" />
+      )}
     </Box>
   );
 };

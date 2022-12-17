@@ -84,19 +84,18 @@ const Home = () => {
           alignItems={'center'}
           safeArea>
           <Input
-            placeholder="Nike, Adidas...."
+            placeholder="Name, Need, Date...."
             onChangeText={text => searchFilterFunction(text)}
             value={search}
-            w="85%"
-            h={12}
+            w="90%"
             bg={'#ffffff'}
             type="search"
             variant={'filled'}
-            borderRadius="10"
+            borderRadius="3xl"
             _focus={{ bg: '#ffffff' }}
-            fontSize={20}
+            fontSize={12}
             InputLeftElement={
-              <EvilIcons style={{ marginLeft: 5 }} size={30} name="search" />
+              <EvilIcons style={{ marginLeft: 5 }} size={20} name="search" />
             }
           />
           <Pressable ml={3} onPress={() => navigation.navigate('Favourite')}>

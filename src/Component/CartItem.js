@@ -94,7 +94,7 @@ export default function CartItem(props) {
               {data.item.productName}
             </Text>
             <Text bold ml={4} fontSize={17} color={'#696969'}>
-              {data.item.totalprice}
+              RS/-{data.item.totalprice}
             </Text>
           </VStack>
           <Center>
@@ -173,7 +173,7 @@ export default function CartItem(props) {
                 bold
                 color={'#000000'}
                 fontSize={20}>
-                {Total} .RS
+                RS/-{Total}
               </Text>
             </Center>
           </HStack>
