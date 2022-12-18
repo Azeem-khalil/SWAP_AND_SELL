@@ -1,6 +1,3 @@
-import { addDoc, collection, getDocs } from 'firebase/firestore';
-import { db } from '../DataBase/firebase';
-
 // const querySnapshot = await getDocs(collection(db, 'Shoes'));
 // querySnapshot.forEach(doc => {
 //   console.log(`${doc.id} => ${doc.data()}`);
