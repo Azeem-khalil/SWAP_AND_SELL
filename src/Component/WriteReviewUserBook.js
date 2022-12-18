@@ -16,7 +16,6 @@ import {
   VStack,
 } from 'native-base';
 import FontAwesome from 'react-native-vector-icons/FontAwesome5';
-import { Rating, AirbnbRating } from 'react-native-ratings';
 import {
   addDoc,
   collection,

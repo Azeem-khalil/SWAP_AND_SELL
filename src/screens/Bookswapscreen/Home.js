@@ -1,20 +1,61 @@
 import { View, Text, Pressable } from 'react-native';
 import React, { useEffect } from 'react';
-import { Box, Center, HStack, Fab, Input } from 'native-base';
+import { Box, HStack, Input } from 'native-base';
 import Header from '../../Component/HomeBook/Header';
 import Content from '../../Component/HomeBook/Content';
-import { db } from '../../Component/DataBase/firebase';
-import { collection, onSnapshot, query } from 'firebase/firestore';
+import { auth, db } from '../../Component/DataBase/firebase';
+import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import { useState } from 'react';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import Ionicons from 'react-native-vector-icons/Octicons';
 import { useNavigation } from '@react-navigation/native';
 
 const Home = () => {
+  const [FavouriteData, setFavouriteData] = useState([]);
   const [BooksAds, setBooksAds] = useState([]);
   const [filteredDataSource, setFilteredDataSource] = useState([]);
   const [search, setSearch] = useState('');
   const navigation = useNavigation();
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchData = async () => {
+      console.log('press Button: ');
+      const user = auth.currentUser;
+      try {
+        const qc = query(
+          collection(db, 'favorite'),
+          where('useridfav', '==', user.uid),
+        );
+
+        const unsubscribe = await onSnapshot(qc, querySnapshot => {
+          const favouriteData = [];
+          //let total = 0;
+          querySnapshot.forEach(doc => {
+            console.log('indoc: ' + `${doc.id} => ${doc.data()}`);
+            //total += doc.data().totalprice;
+            favouriteData.push({
+              ...doc.data(),
+              key: doc.id,
+            });
+          });
+          if (isMounted) {
+            setFavouriteData(favouriteData);
+            //setTotal(total);
+          }
+          console.log('cartData ' + favouriteData);
+        });
+      } catch (e) {
+        console.error('Error adding document: ', e);
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
   useEffect(() => {
     let isMounted = true;
     const fetchData = async () => {
@@ -108,7 +149,7 @@ const Home = () => {
               left={2}
               bg={'#ff0000'}
               _text={{ color: '#ffffff', fontSize: '11px' }}>
-              5
+              {FavouriteData.length}
             </Box>
           </Pressable>
         </HStack>

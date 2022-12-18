@@ -38,6 +38,7 @@ const Review = props => {
                     <Rating
                       ratingCount={5}
                       imageSize={10}
+                      readonly={true}
                       startingValue={prop.rating}
                     />
                   </HStack>

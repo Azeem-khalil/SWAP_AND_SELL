@@ -9,7 +9,12 @@ function rating({ value, size }) {
   return (
     <Box>
       <HStack space={0.4} mt={1} alignItems="center">
-        <Rating ratingCount={5} imageSize={size} startingValue={value} />
+        <Rating
+          ratingCount={5}
+          readonly={true}
+          imageSize={size}
+          startingValue={value}
+        />
       </HStack>
     </Box>
   );

@@ -55,7 +55,12 @@ const ReviewUserBook = props => {
       </Heading>
       <Box>
         <HStack space={0.5} alignItems="center">
-          <Rating ratingCount={5} imageSize={10} startingValue={userRating} />
+          <Rating
+            ratingCount={5}
+            readonly={true}
+            imageSize={10}
+            startingValue={userRating}
+          />
         </HStack>
       </Box>
       <Heading my={9} bold fontSize={15} mb={2}>
@@ -82,6 +87,7 @@ const ReviewUserBook = props => {
                     <Rating
                       ratingCount={5}
                       imageSize={10}
+                      readonly={true}
                       startingValue={prop.rating}
                     />
                   </HStack>

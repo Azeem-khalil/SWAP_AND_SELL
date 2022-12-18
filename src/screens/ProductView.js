@@ -182,8 +182,8 @@ const ProductView = ({ route }) => {
       toast.show({
         render: () => {
           return (
-            <Box bg="emerald.500" px="2" py="1" rounded="sm" mb={5}>
-              Before add cart Please select quantity
+            <Box bg="#ffffff" px="4" py="3" rounded="sm" mb={5}>
+              Before add cart Please select quantity!
             </Box>
           );
         },
@@ -218,6 +218,7 @@ const ProductView = ({ route }) => {
               <Rating
                 ratingCount={5}
                 imageSize={10}
+                readonly={true}
                 startingValue={product.rating}
               />
               {/* <Text mt={2} fontSize={12} lineHeight={24}>

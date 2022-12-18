@@ -7,8 +7,9 @@ import {
   Button,
   Center,
   useToast,
+  Toast,
 } from 'native-base';
-
+import React, { useState } from 'react';
 import {
   addDoc,
   collection,
@@ -19,7 +20,8 @@ import {
   updateDoc,
   where,
 } from 'firebase/firestore';
-import React, { useState } from 'react';
+import * as yup from 'yup';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
@@ -35,10 +37,23 @@ const Signup = ({ navigation }) => {
   const [conformPass, setconformPass] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [submitButtonDisabled, setSubmitButtonDisabled] = useState(false);
+  const [hidenpass, sethidenpss] = useState(true);
+  const [hidenconfirmpass, sethidenconfirmpass] = useState(true);
 
+  const loginValidationSchema = yup.object().shape({
+    email: yup
+      .string()
+      .email('Please enter valid email')
+      .required('Email Address is Required'),
+    password: yup
+      .string()
+      .min(8, ({ min }) => `Password must be at least ${min} characters`)
+      .required('Password is required'),
+  });
   const handleSubmission = async () => {
     console.log('start');
     console.log(name);
+    //var validPassRegex = ' (?=.*d)(?=.*[a-z])(?=.*[A-Z]).{8,}';
     if (!name || !email || !pass) {
       setErrorMsg('Fill all fields');
       toast.show({
@@ -52,6 +67,19 @@ const Signup = ({ navigation }) => {
       });
       return;
     }
+
+    // if (!pass.match(validPassRegex)) {
+    //   toast.show({
+    //     render: () => {
+    //       return (
+    //         <Box bg="#ffffff" px="2" py="1" rounded="sm" mb={5}>
+    //           Please Input strong password!!
+    //         </Box>
+    //       );
+    //     },
+    //   });
+    //   return;
+    // }
     if (pass !== conformPass) {
       setErrorMsg('passowrd and confirom password are note match');
       toast.show({
@@ -167,21 +195,52 @@ const Signup = ({ navigation }) => {
             <FormControl>
               <FormControl.Label>Password</FormControl.Label>
               <Input
-                type="password"
+                //type="password"
+                secureTextEntry={hidenpass}
                 isRequire
                 onChangeText={TEXT => {
                   setconformPass(TEXT);
                 }}
+                InputRightElement={
+                  hidenpass ? (
+                    <Ionicons
+                      onPress={() => sethidenpss(!hidenpass)}
+                      size={20}
+                      name="eye"
+                    />
+                  ) : (
+                    <Ionicons
+                      onPress={() => sethidenpss(!hidenpass)}
+                      size={20}
+                      name="eye-off"
+                    />
+                  )
+                }
               />
             </FormControl>
             <FormControl>
               <FormControl.Label>Confirm Password</FormControl.Label>
               <Input
-                type="password"
+                secureTextEntry={hidenconfirmpass}
                 isRequire
                 onChangeText={TEXT => {
                   setpass(TEXT);
                 }}
+                InputRightElement={
+                  hidenconfirmpass ? (
+                    <Ionicons
+                      onPress={() => sethidenconfirmpass(!hidenconfirmpass)}
+                      size={20}
+                      name="eye"
+                    />
+                  ) : (
+                    <Ionicons
+                      onPress={() => sethidenconfirmpass(!hidenconfirmpass)}
+                      size={20}
+                      name="eye-off"
+                    />
+                  )
+                }
               />
             </FormControl>
             <Button

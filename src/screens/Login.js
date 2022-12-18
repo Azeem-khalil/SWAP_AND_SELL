@@ -22,41 +22,14 @@ import {
   sendEmailVerification,
   applyActionCode,
 } from 'firebase/auth';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
 import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
 function Login({ navigation }) {
-  async function Addproduct() {
-    console.log('press Button: ');
-    try {
-      const docRef = await addDoc(collection(db, 'shoes'), {
-        name: 'men shoes PNG7492',
-        image1:
-          'https://www.freepnglogos.com/uploads/shoes-png/shoes-shoe-png-transparent-shoe-images-pluspng-17.png',
-        image2:
-          'https://www.freepnglogos.com/uploads/shoes-png/shoes-shoe-png-transparent-shoe-images-pluspng-17.png',
-        image3:
-          'https://www.freepnglogos.com/uploads/shoes-png/shoes-shoe-png-transparent-shoe-images-pluspng-17.png',
-
-        description:
-          'You can use shoes, shoe png transparent shoe images high-quality image to inspire your logo work and create more beautiful logos. You can also use them on websites, magazines, prints, presentations, graphics and video work',
-        price: 77,
-        size: 10,
-        condition: 5,
-        countInStock: 12,
-        category: 'men',
-        rating: 4.6,
-        numReview: 4,
-      });
-      console.log('Document written with ID: ', docRef.id);
-    } catch (e) {
-      console.error('Error adding document: ', e);
-    }
-  }
-
+  const [hidenpass, sethidenpss] = useState(true);
   const toast = useToast();
-
   const [email, setemail] = useState('');
   const [pass, setpass] = useState('');
-
   const [errorMsg, setErrorMsg] = useState('');
   const [submitButtonDisabled, setSubmitButtonDisabled] = useState(false);
 
@@ -140,11 +113,26 @@ function Login({ navigation }) {
             <FormControl>
               <FormControl.Label>Password</FormControl.Label>
               <Input
-                type="password"
+                secureTextEntry={hidenpass}
                 isRequire
                 onChangeText={TEXT => {
                   setpass(TEXT);
                 }}
+                InputRightElement={
+                  hidenpass ? (
+                    <Ionicons
+                      onPress={() => sethidenpss(!hidenpass)}
+                      size={20}
+                      name="eye"
+                    />
+                  ) : (
+                    <Ionicons
+                      onPress={() => sethidenpss(!hidenpass)}
+                      size={20}
+                      name="eye-off"
+                    />
+                  )
+                }
               />
               <Link
                 onPress={() => navigation.navigate('ForgetPassword')}
