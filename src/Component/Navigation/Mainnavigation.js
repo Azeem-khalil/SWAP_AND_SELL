@@ -7,8 +7,7 @@ import BottomNavBook from './BottomNavBook';
 import Edit_Profile from '../../screens/Edit_Profile';
 import SingleProductView from '../../screens/Bookswapscreen/SingleProductView';
 import ProductView from '../../screens/ProductView';
-import About from '../../screens/About';
-import Contact from '../../screens/Contact';
+
 import Favourite from '../../screens/Bookswapscreen/Favourite';
 
 const Stack = createNativeStackNavigator();
@@ -40,18 +39,6 @@ const Mainnavigation = props => {
       <Stack.Screen name={'SingleProductView'} component={SingleProductView} />
       <Stack.Screen name={'ProductView'} component={ProductView} />
       <Stack.Screen name={'Favourite'} component={Favourite} />
-
-      <Stack.Screen
-        options={{ headerShown: false }}
-        name={'About'}
-        component={About}
-      />
-
-      <Stack.Screen
-        options={{ headerShown: false }}
-        name={'Contact'}
-        component={Contact}
-      />
     </Stack.Navigator>
   );
 };
