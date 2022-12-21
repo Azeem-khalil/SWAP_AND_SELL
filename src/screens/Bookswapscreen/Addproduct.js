@@ -9,9 +9,10 @@ import {
   TextArea,
   ScrollView,
   useToast,
+  Text,
 } from 'native-base';
 import { launchImageLibrary } from 'react-native-image-picker';
-import { StyleSheet, Text, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -19,14 +20,32 @@ import { auth, db, storage } from '../../Component/DataBase/firebase';
 import { addDoc, collection } from 'firebase/firestore';
 import { useNavigation } from '@react-navigation/native';
 const Addproduct = () => {
-  const [cameraPhoto, setCameraPhoto] = useState();
-  const [galleryPhoto, setGalleryPhoto] = useState();
+  const [galleryPhoto, setGalleryPhoto] = useState('');
   const [checkAddBookAd, setcheckAddBookAd] = useState(false);
+  const [checkuploadImage, setuploadImage] = useState(false);
+  const [loadinguploadImage, setloadinguploadImage] = useState(false);
+
   const toast = useToast();
   const user = auth.currentUser;
 
-  const [formData, setData] = useState({});
-  const [errors, setErrors] = useState({});
+  const [formData, setData] = useState({
+    BookName: '',
+    description: '',
+    PhoneNumber: '',
+    image: '',
+    location: '',
+    need: '',
+  });
+  const [errors, setErrors] = useState({
+    BookName: '',
+    description: '',
+    PhoneNumber: '',
+    location: '',
+    need: '',
+    image: '',
+    galleryPhoto: '',
+  });
+
   const [currentDate, setCurrentDate] = useState('');
   const navigation = useNavigation();
 
@@ -57,37 +76,99 @@ const Addproduct = () => {
     const result = await launchImageLibrary(options);
     if (!result.didCancel) setGalleryPhoto(result.assets[0].uri);
   };
-
+  const validatephoneNumber = phoneNumber => {
+    let re = /^923\d{9}$|^03\d{9}$/;
+    return re.test(phoneNumber);
+  };
   const validate = () => {
-    if (formData.PhoneNumber === undefined) {
-      setErrors({ ...errors, name: 'PhoneNumber is required' });
-      return false;
-    } else if (formData.name.length < 3) {
-      setErrors({ ...errors, name: 'Name is too short' });
+    console.log('validate!', formData.BookName);
+
+    let returnfalse = true;
+    // if (galleryPhoto === '') {
+    //   setErrors({ ...errors, galleryPhoto: 'galleryPhoto is Required' });
+    //   returnfalse = false;
+    // }
+
+    // if (formData.image === '') {
+    //   setErrors({ ...errors, image: 'image is Required' });
+    //   returnfalse = false;
+    // }
+
+    if (formData.PhoneNumber === '') {
+      setErrors({ ...errors, PhoneNumber: 'PhoneNumber is required' });
+      returnfalse = false;
+    } else if (!validatephoneNumber(formData.PhoneNumber)) {
+      setErrors({
+        ...errors,
+        PhoneNumber:
+          'PhoneNumber should contain atleast 11 Number. 03230223234',
+      });
+      returnfalse = false;
+    }
+    if (formData.location === '') {
+      setErrors({ ...errors, location: 'location is Required' });
+      returnfalse = false;
+    }
+    if (formData.need === '') {
+      setErrors({ ...errors, need: 'need is Required' });
+      returnfalse = false;
+    }
+    if (formData.description === '') {
+      setErrors({ ...errors, description: 'description is Required' });
+      returnfalse = false;
+    }
+    if (formData.BookName === '') {
+      setErrors({ ...errors, BookName: 'BookName is Required' });
+      returnfalse = false;
+    }
+    if (returnfalse) {
+      return true;
+    } else {
       return false;
     }
-
-    return true;
   };
+  async function Submeted() {
+    setcheckAddBookAd(true);
+    toast.show({
+      render: () => {
+        return (
+          <Box bg="#ffffff" px="2" py="1" rounded="sm" mb={5}>
+            Added successfully!!!
+          </Box>
+        );
+      },
+    });
+    const docRef = await addDoc(collection(db, 'BooksAds'), {
+      userName: user.displayName,
+      uid: user.uid,
+      email: user.email,
+      BookName: formData.BookName,
+      description: formData.description,
+      need: formData.need,
+      PhoneNumber: formData.PhoneNumber,
+      image: formData.image,
+      location: formData.location,
+      adfav: false,
+      date: currentDate,
+    });
+    setcheckAddBookAd(false);
+
+    // {
+    //   toast.show({
+    //     render: () => {
+    //       return (
+    //         <Box bg="#ffffff" px="2" py="1" rounded="sm" mb={5}>
+    //           Before add Book Ad Please Fill all Failed!!
+    //         </Box>
+    //       );
+    //     },
+    //   });
+    //   return;
+    // }
+  }
   async function AddtoBookAd() {
-    if (
-      (!formData.BookName == '' &&
-        !formData.description == '' &&
-        !formData.PhoneNumber == '' &&
-        !formData.image == '' &&
-        !formData.location == '') ||
-      !formData.need == ''
-    ) {
-      setcheckAddBookAd(true);
-      toast.show({
-        render: () => {
-          return (
-            <Box bg="#ffffff" px="2" py="1" rounded="sm" mb={5}>
-              Added successfully!!!
-            </Box>
-          );
-        },
-      });
+    setcheckAddBookAd(true);
+    if (checkuploadImage) {
       const docRef = await addDoc(collection(db, 'BooksAds'), {
         userName: user.displayName,
         uid: user.uid,
@@ -101,58 +182,103 @@ const Addproduct = () => {
         adfav: false,
         date: currentDate,
       });
+      toast.show({
+        render: () => {
+          return (
+            <Box bg="#ffffff" px="2" py="1" rounded="sm" mb={5}>
+              Added successfully!!!
+            </Box>
+          );
+        },
+      });
+      setData({
+        BookName: '',
+        description: '',
+        PhoneNumber: '',
+        image: '',
+        location: '',
+        need: '',
+      });
+      setErrors({
+        BookName: '',
+        description: '',
+        PhoneNumber: '',
+        location: '',
+        need: '',
+        image: '',
+        galleryPhoto: '',
+      });
+      setGalleryPhoto('');
       setcheckAddBookAd(false);
-
-      //navigation.navigate('Cart');
+      setuploadImage(false);
     } else {
       toast.show({
         render: () => {
           return (
             <Box bg="#ffffff" px="2" py="1" rounded="sm" mb={5}>
-              Before add Book Ad Please Fill all Failed!!
+              Upload Image please!!!
             </Box>
           );
         },
       });
-      return;
     }
+    setcheckAddBookAd(false);
   }
   const uploadImage = async () => {
-    const response = await fetch(galleryPhoto);
-    const blob = await response.blob();
-    const filename = galleryPhoto.substring(galleryPhoto.lastIndexOf('/') + 1);
-    console.log('blob!', blob);
+    if (galleryPhoto !== '') {
+      setloadinguploadImage(true);
+      const response = await fetch(galleryPhoto);
+      const blob = await response.blob();
+      const filename = galleryPhoto.substring(
+        galleryPhoto.lastIndexOf('/') + 1,
+      );
+      console.log('blob!', blob);
 
-    const storageRef = ref(storage, filename);
-    console.log('galleryPhoto!', galleryPhoto);
-    // 'file' comes from the Blob or File API
-    uploadBytes(storageRef, blob).then(snapshot => {
-      console.log('snapshot!', snapshot.metadata.fullPath);
-      const starsRef = ref(storage, snapshot.metadata.fullPath);
+      const storageRef = ref(storage, filename);
+      console.log('galleryPhoto!', galleryPhoto);
+      // 'file' comes from the Blob or File API
+      uploadBytes(storageRef, blob).then(snapshot => {
+        console.log('snapshot!', snapshot.metadata.fullPath);
+        const starsRef = ref(storage, snapshot.metadata.fullPath);
 
-      // Get the download URL
-      getDownloadURL(starsRef).then(url => {
-        console.log('url! ', url);
-        setData({ ...formData, image: url });
-        toast.show({
-          render: () => {
-            return (
-              <Box bg="#ffffff" px="2" py="1" rounded="sm" mb={5}>
-                Successfully Upload Image!!
-              </Box>
-            );
-          },
+        // Get the download URL
+        getDownloadURL(starsRef).then(url => {
+          console.log('url! ', url);
+          setData({ ...formData, image: url });
+
+          toast.show({
+            render: () => {
+              return (
+                <Box bg="#ffffff" px="2" py="1" rounded="sm" mb={5}>
+                  Successfully Upload Image!!
+                </Box>
+              );
+            },
+          });
+          setuploadImage(true);
+          setloadinguploadImage(false);
+          // Insert url into an <img> tag to "download"
         });
-        // Insert url into an <img> tag to "download"
       });
-    });
+    } else {
+      toast.show({
+        render: () => {
+          return (
+            <Box bg="#ffffff" px="2" py="1" rounded="sm" mb={5}>
+              Before Upload Image please select image!!
+            </Box>
+          );
+        },
+      });
+    }
   };
   const onSubmit = () => {
     console.log('formData ', formData);
+    validate() ? AddtoBookAd() : console.log('Validation Failed');
     //validate() ? console.log('Submitted') : console.log('Validation Failed');
-    if (galleryPhoto) {
-      AddtoBookAd();
-    }
+    // if (galleryPhoto) {
+    //   AddtoBookAd();
+    // }
 
     //navigation.goBack();
   };
@@ -171,6 +297,7 @@ const Addproduct = () => {
                 Book Name
               </FormControl.Label>
               <Input
+                value={formData.BookName}
                 placeholder="Book..."
                 onChangeText={value =>
                   setData({ ...formData, BookName: value })
@@ -183,12 +310,10 @@ const Addproduct = () => {
                   />
                 }
               />
-              {' BookName' in errors ? (
-                <FormControl.ErrorMessage>Error</FormControl.ErrorMessage>
+              {'BookName' in errors ? (
+                <Text color={'#ff0000'}>{errors.BookName}</Text>
               ) : (
-                <FormControl.HelperText>
-                  Name should contain atleast 3 character.
-                </FormControl.HelperText>
+                <Text></Text>
               )}
             </FormControl>
             <FormControl isRequired isInvalid={'description' in errors}>
@@ -199,6 +324,7 @@ const Addproduct = () => {
                 Add description
               </FormControl.Label>
               <TextArea
+                value={formData.description}
                 h={20}
                 w="full"
                 placeholder="Add your Comment......."
@@ -213,11 +339,9 @@ const Addproduct = () => {
               />
 
               {'description' in errors ? (
-                <FormControl.ErrorMessage>Error</FormControl.ErrorMessage>
+                <Text color={'#ff0000'}> {errors.description}</Text>
               ) : (
-                <FormControl.HelperText>
-                  Last Name should contain atleast 3 character.
-                </FormControl.HelperText>
+                <Text></Text>
               )}
             </FormControl>
             <FormControl isRequired isInvalid={'need' in errors}>
@@ -228,6 +352,7 @@ const Addproduct = () => {
                 your need
               </FormControl.Label>
               <TextArea
+                value={formData.need}
                 h={20}
                 w="full"
                 placeholder="Add your need......."
@@ -240,11 +365,9 @@ const Addproduct = () => {
               />
 
               {'need' in errors ? (
-                <FormControl.ErrorMessage>Error</FormControl.ErrorMessage>
+                <Text color={'#ff0000'}> {errors.need}</Text>
               ) : (
-                <FormControl.HelperText>
-                  need should contain atleast 3 character.
-                </FormControl.HelperText>
+                <Text></Text>
               )}
             </FormControl>
             <FormControl isRequired isInvalid={'location' in errors}>
@@ -255,6 +378,7 @@ const Addproduct = () => {
                 location
               </FormControl.Label>
               <Input
+                value={formData.location}
                 placeholder="location... "
                 onChangeText={value =>
                   setData({ ...formData, location: value })
@@ -268,11 +392,9 @@ const Addproduct = () => {
                 }
               />
               {'location' in errors ? (
-                <FormControl.ErrorMessage>Error</FormControl.ErrorMessage>
+                <Text color={'#ff0000'}> {errors.location}</Text>
               ) : (
-                <FormControl.HelperText>
-                  location should contain atleast 3 character.
-                </FormControl.HelperText>
+                <Text></Text>
               )}
             </FormControl>
             <FormControl isRequired isInvalid={'PhoneNumber' in errors}>
@@ -283,6 +405,7 @@ const Addproduct = () => {
                 PhoneNumber
               </FormControl.Label>
               <Input
+                value={formData.PhoneNumber}
                 type="number"
                 placeholder="PhoneNumber..."
                 onChangeText={value =>
@@ -297,11 +420,9 @@ const Addproduct = () => {
                 }
               />
               {'PhoneNumber' in errors ? (
-                <FormControl.ErrorMessage>Error</FormControl.ErrorMessage>
+                <Text color={'#ff0000'}> {errors.PhoneNumber}</Text>
               ) : (
-                <FormControl.HelperText>
-                  Phone Number should contain atleast 3 character.
-                </FormControl.HelperText>
+                <Text></Text>
               )}
             </FormControl>
             <TouchableOpacity onPress={openGallery} style={styles.button}>
@@ -311,15 +432,28 @@ const Addproduct = () => {
             {galleryPhoto ? (
               <Image
                 style={styles.imageStyle}
-                alt={''}
+                alt={'name'}
                 source={{ uri: galleryPhoto }}
               />
             ) : (
               <Text></Text>
             )}
-            <TouchableOpacity onPress={uploadImage} style={styles.button}>
+            {/* {'galleryPhoto' in errors ? (
+              <Text color={'#ff0000'}> {errors.galleryPhoto}</Text>
+            ) : (
+              <Text></Text>
+            )} */}
+            <TouchableOpacity
+              disabled={loadinguploadImage}
+              onPress={uploadImage}
+              style={styles.button}>
               <Text style={styles.buttonText}>upload Image</Text>
             </TouchableOpacity>
+            {/* {'image' in errors ? (
+              <Text color={'#ff0000'}> {errors.image}</Text>
+            ) : (
+              <Text></Text>
+            )} */}
             <Button
               disabled={checkAddBookAd}
               onPress={onSubmit}

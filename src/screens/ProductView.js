@@ -268,7 +268,7 @@ const ProductView = ({ route }) => {
                     color="#ffffff"
                     bg="#5b21b6"
                     _pressed={{ bg: '#a78bfa' }}
-                    onPress={ADDtoCART}
+                    onPress={() => ADDtoCART()}
                     disabled={!checkCart}>
                     ADD TO CART
                   </Button>

@@ -18,13 +18,20 @@ import { addDoc, collection, deleteDoc, doc } from 'firebase/firestore';
 
 const DeliveryConfirmModel = props => {
   const [currentDate, setCurrentDate] = useState('');
-  const [formData, setData] = useState({});
+  const [formData, setData] = useState({
+    zipCode: '',
+    address: '',
+    phoneNumber: '',
+  });
 
   const Total = props.Total;
   const CartData = props.CartData;
   const [showModal, setShowModal] = useState(false);
   const [showModal2, setShowModal2] = useState(false);
   const [checkConfirmOrder, setcheckConfirmOrder] = useState(true);
+  const [errorzipCode, seterrorzipCode] = useState('');
+  const [errorphoneNumber, seterrorphoneNumber] = useState('');
+  const [errorAddress, seterrorAddress] = useState('');
 
   const toast = useToast();
   const user = auth.currentUser;
@@ -51,13 +58,44 @@ const DeliveryConfirmModel = props => {
       console.log(cartdata.key);
     });
   }
-  async function ConfirmOrder() {
-    if (
-      checkConfirmOrder &&
-      !formData.zipCode == '' &&
-      !formData.phoneNumber == '' &&
-      !formData.address == ''
-    ) {
+  const validatephoneNumber = phoneNumber => {
+    let re = /^923\d{9}$|^03\d{9}$/;
+    return re.test(phoneNumber);
+  };
+  const validatezipCode = zipCode => {
+    let re = /^\d{5}$|^\d{5}-\d{4}$/;
+    return re.test(zipCode);
+  };
+  const validate = () => {
+    let returnfalse = true;
+    if (formData.address === '') {
+      seterrorAddress('Address is Required');
+      returnfalse = false;
+    }
+    if (formData.zipCode === '') {
+      seterrorzipCode('zipCode is Required');
+      returnfalse = false;
+    } else if (!validatezipCode(formData.zipCode)) {
+      seterrorzipCode('Please enter valid 5 digit zip Code. ');
+      returnfalse = false;
+    }
+    if (formData.phoneNumber === '') {
+      seterrorphoneNumber('phoneNumber is required');
+      returnfalse = false;
+    } else if (!validatephoneNumber(formData.phoneNumber)) {
+      seterrorphoneNumber(
+        'PhoneNumber should contain atleast 11 Number. 03230223234',
+      );
+      returnfalse = false;
+    }
+    if (returnfalse) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+  async function Submeted() {
+    if (checkConfirmOrder) {
       toast.show({
         render: () => {
           return (
@@ -83,18 +121,69 @@ const DeliveryConfirmModel = props => {
       //navigation.navigate('Cart');
       setShowModal(false);
       setShowModal2(false);
-    } else {
-      toast.show({
-        render: () => {
-          return (
-            <Box bg="#ffffff" px="2" py="1" rounded="sm" mb={5}>
-              Before Confirm Order Please Fill all section!!
-            </Box>
-          );
-        },
-      });
-      return;
+      seterrorAddress('');
+      seterrorphoneNumber('');
+      seterrorzipCode('');
     }
+    // else {
+    //   toast.show({
+    //     render: () => {
+    //       return (
+    //         <Box bg="#ffffff" px="2" py="1" rounded="sm" mb={5}>
+    //           Before Confirm Order Please Fill all section!!
+    //         </Box>
+    //       );
+    //     },
+    //   });
+    //   return;
+    // }
+  }
+  async function ConfirmOrder() {
+    validate() ? Submeted() : console.log('Validation Failed');
+
+    // if (
+    //   checkConfirmOrder &&
+    //   !formData.zipCode == '' &&
+    //   !formData.phoneNumber == '' &&
+    //   !formData.address == ''
+    // ) {
+    //   toast.show({
+    //     render: () => {
+    //       return (
+    //         <Box bg="#ffffff" px="2" py="1" rounded="sm" mb={5}>
+    //           Order successfully Conirm!!!
+    //         </Box>
+    //       );
+    //     },
+    //   });
+    //   setcheckConfirmOrder(false);
+    //   const docRef = await addDoc(collection(db, 'padingOrder'), {
+    //     userName: user.displayName,
+    //     uid: user.uid,
+    //     zipCode: formData.zipCode,
+    //     address: formData.address,
+    //     phoneNumber: formData.phoneNumber,
+    //     date: currentDate,
+    //     total: Total,
+    //     products: CartData,
+    //   });
+    //   setcheckConfirmOrder(true);
+    //   deleteCartProduct(CartData);
+    //   //navigation.navigate('Cart');
+    //   setShowModal(false);
+    //   setShowModal2(false);
+    // } else {
+    //   toast.show({
+    //     render: () => {
+    //       return (
+    //         <Box bg="#ffffff" px="2" py="1" rounded="sm" mb={5}>
+    //           Before Confirm Order Please Fill all section!!
+    //         </Box>
+    //       );
+    //     },
+    //   });
+    //   return;
+    // }
   }
   return (
     <>
@@ -146,7 +235,15 @@ const DeliveryConfirmModel = props => {
         </Modal.Content>
       </Modal>
 
-      <Modal isOpen={showModal2} onClose={() => setShowModal2(false)} size="lg">
+      <Modal
+        isOpen={showModal2}
+        onClose={() => {
+          setShowModal2(false);
+          seterrorAddress('');
+          seterrorphoneNumber('');
+          seterrorzipCode('');
+        }}
+        size="lg">
         <Modal.Content maxWidth="350">
           <Modal.CloseButton />
           <Modal.Header>Payment on delivery</Modal.Header>
@@ -154,25 +251,44 @@ const DeliveryConfirmModel = props => {
             <FormControl>
               <FormControl.Label>Address</FormControl.Label>
               <Input
+                isRequired
                 placeholder="Address..."
                 onChangeText={value => setData({ ...formData, address: value })}
               />
+
+              {errorAddress ? (
+                <Text color={'#ff0000'}>{errorAddress}</Text>
+              ) : (
+                <FormControl.HelperText></FormControl.HelperText>
+              )}
             </FormControl>
             <FormControl mt="3">
               <FormControl.Label>Zip Code</FormControl.Label>
               <Input
+                isRequired
                 placeholder="Zip Code..."
                 onChangeText={value => setData({ ...formData, zipCode: value })}
               />
+              {errorzipCode ? (
+                <Text color={'#ff0000'}>{errorzipCode}</Text>
+              ) : (
+                <FormControl.HelperText></FormControl.HelperText>
+              )}
             </FormControl>
             <FormControl mt="3">
               <FormControl.Label>Phone Number</FormControl.Label>
               <Input
+                isRequired
                 placeholder="Phone Number..."
                 onChangeText={value =>
                   setData({ ...formData, phoneNumber: value })
                 }
               />
+              {errorphoneNumber ? (
+                <Text color={'#ff0000'}>{errorphoneNumber}</Text>
+              ) : (
+                <FormControl.HelperText></FormControl.HelperText>
+              )}
             </FormControl>
           </Modal.Body>
           <Modal.Footer>

@@ -268,7 +268,7 @@ const WriteReviewUserBook = props => {
             bg={'#5b21b6'}
             _text={{ color: '#ffffff', fontWeight: 'bold' }}
             _pressed={{ bg: '#a78bfa' }}
-            onPress={ratingValidate}>
+            onPress={() => ratingValidate()}>
             Submit
           </Button>
         </FormControl>

@@ -125,7 +125,7 @@ const MainPage = props => {
           <Text color={'#ff0000'}> {auth.currentUser.email}</Text>
           <Text> for Verification</Text>
 
-          <Button title="Reload" onPress={startReload}>
+          <Button title="Reload" onPress={() => startReload()}>
             Reload App
           </Button>
         </Box>

@@ -124,7 +124,7 @@ export default function Profile() {
             mt={7}
             bgColor="#7e22ce"
             colorScheme="indigo"
-            onPress={signout}>
+            onPress={() => signout()}>
             Logout
           </Button>
         </View>

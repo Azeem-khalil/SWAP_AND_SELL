@@ -9,6 +9,7 @@ import {
   Heading,
   useToast,
   Box,
+  Text,
 } from 'native-base';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -26,11 +27,15 @@ import {
 import { auth, db } from '../Component/DataBase/firebase';
 import { updateProfile } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
+import { useState } from 'react';
 const Edit_Profile = ({ route }) => {
   //function Edit_Profile(route) {
-  const [formData, setData] = React.useState({});
-  const [errors, setErrors] = React.useState({});
-  const [updateflage, setupdateflage] = React.useState(false);
+  const [formData, setData] = useState({});
+  const [errors, setErrors] = useState({});
+  const [errorname, setErrorname] = useState();
+  const [errorphoneNumber, seterrorphoneNumber] = useState('');
+  const [errorAddress, seterrorAddress] = useState('');
+  const [updateflage, setupdateflage] = useState(false);
   const toast = useToast();
   const navigation = useNavigation();
   const user_Data = route.params;
@@ -45,17 +50,6 @@ const Edit_Profile = ({ route }) => {
     };
   }, [user_Data]);
 
-  const validate = () => {
-    if (formData.name === undefined) {
-      setErrors({ ...errors, name: 'Name is required' });
-      return false;
-    } else if (formData.name.length < 3) {
-      setErrors({ ...errors, name: 'Name is too short' });
-      return false;
-    }
-
-    return true;
-  };
   async function update_Profile() {
     setupdateflage(true);
 
@@ -73,17 +67,6 @@ const Edit_Profile = ({ route }) => {
       address: formData.address,
       phoneNumber: formData.phoneNumber,
     });
-  }
-
-  const onSubmit = () => {
-    //validate() ? console.log('Submitted') : console.log('Validation Failed');
-    console.log('formData.name: ', formData.displayName);
-    console.log('formData.Address: ', formData.address);
-    console.log('formData.name: ', formData.phoneNumber);
-
-    update_Profile();
-    //console.log('update_Profile flage: ', updateflage);
-
     toast.show({
       render: () => {
         return (
@@ -94,7 +77,56 @@ const Edit_Profile = ({ route }) => {
       },
     });
     console.log('Update sucesfu: ');
+    setupdateflage(false);
+
     navigation.goBack();
+  }
+  const validatename = name => {
+    let re = /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]+[ ]*)*$/;
+    return re.test(name);
+  };
+  const validatephoneNumber = phoneNumber => {
+    let re = /^923\d{9}$|^03\d{9}$/;
+    return re.test(phoneNumber);
+  };
+  const validate = () => {
+    let returnfalse = true;
+    if (formData.address === '') {
+      seterrorAddress('Address is Required');
+      returnfalse = false;
+    }
+    if (formData.displayName === '') {
+      setErrorname('Name is Required');
+      returnfalse = false;
+    } else if (!validatename(formData.displayName)) {
+      setErrorname('Please enter valid Name. ');
+      returnfalse = false;
+    } else if (formData.displayName.length < 3) {
+      setErrorname('Name is too short');
+      returnfalse = false;
+    }
+    if (formData.phoneNumber === '') {
+      seterrorphoneNumber('phoneNumber is required');
+      returnfalse = false;
+    } else if (!validatephoneNumber(formData.phoneNumber)) {
+      seterrorphoneNumber(
+        'PhoneNumber should contain atleast 11 Number. 03230223234',
+      );
+      returnfalse = false;
+    }
+    if (returnfalse) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+  const onSubmit = () => {
+    //validate() ? console.log('Submitted') : console.log('Validation Failed');
+    console.log('formData.name: ', formData.displayName);
+    console.log('formData.Address: ', formData.address);
+    console.log('formData.name: ', formData.phoneNumber);
+    validate() ? update_Profile() : console.log('Validation Failed');
+
     // } else {
     //   toast.show({
     //     render: () => {
@@ -115,7 +147,7 @@ const Edit_Profile = ({ route }) => {
         <ScrollView showsVerticalScrollIndicator={false}>
           <Heading mb={2}>Edit Profile</Heading>
 
-          <FormControl isRequired isInvalid={'name' in errors}>
+          <FormControl isRequired isInvalid={errorname}>
             <FormControl.Label
               _text={{
                 bold: true,
@@ -123,6 +155,7 @@ const Edit_Profile = ({ route }) => {
               Name
             </FormControl.Label>
             <Input
+              isRequired
               value={formData.displayName}
               placeholder="Azeem..."
               onChangeText={value =>
@@ -132,8 +165,8 @@ const Edit_Profile = ({ route }) => {
                 <Fontisto style={{ marginLeft: 5 }} size={20} name="person" />
               }
             />
-            {'name' in errors ? (
-              <FormControl.ErrorMessage>Error</FormControl.ErrorMessage>
+            {errorname ? (
+              <Text color={'#ff0000'}>{errorname}</Text>
             ) : (
               <FormControl.HelperText>
                 Name should contain atleast 3 character.
@@ -141,7 +174,7 @@ const Edit_Profile = ({ route }) => {
             )}
           </FormControl>
 
-          <FormControl isRequired isInvalid={'PhoneNumber' in errors}>
+          <FormControl isRequired isInvalid={errorphoneNumber}>
             <FormControl.Label
               _text={{
                 bold: true,
@@ -158,16 +191,15 @@ const Edit_Profile = ({ route }) => {
                 <FontAwesome style={{ marginLeft: 5 }} size={20} name="phone" />
               }
             />
-            {'PhoneNumber' in errors ? (
-              <FormControl.ErrorMessage>Error</FormControl.ErrorMessage>
+
+            {errorphoneNumber ? (
+              <Text color={'#ff0000'}>{errorphoneNumber}</Text>
             ) : (
-              <FormControl.HelperText>
-                Phone Number should contain atleast 3 character.
-              </FormControl.HelperText>
+              <FormControl.HelperText>like 03123456712</FormControl.HelperText>
             )}
           </FormControl>
 
-          <FormControl isRequired isInvalid={'Address' in errors}>
+          <FormControl isRequired isInvalid={errorAddress}>
             <FormControl.Label
               _text={{
                 bold: true,
@@ -182,16 +214,18 @@ const Edit_Profile = ({ route }) => {
                 <Ionicons style={{ marginLeft: 5 }} size={20} name="location" />
               }
             />
-            {'Address' in errors ? (
-              <FormControl.ErrorMessage>Error</FormControl.ErrorMessage>
+            {errorAddress ? (
+              <Text color={'#ff0000'}>{errorAddress}</Text>
             ) : (
-              <FormControl.HelperText>
-                Address should contain atleast 3 character.
-              </FormControl.HelperText>
+              <FormControl.HelperText></FormControl.HelperText>
             )}
           </FormControl>
 
-          <Button onPress={onSubmit} mt="5" colorScheme="cyan">
+          <Button
+            onPress={onSubmit}
+            disabled={updateflage}
+            mt="5"
+            colorScheme="cyan">
             Submit
           </Button>
         </ScrollView>

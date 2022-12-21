@@ -8,6 +8,7 @@ import {
   Center,
   useToast,
   Toast,
+  Text,
 } from 'native-base';
 import React, { useState } from 'react';
 import {
@@ -20,7 +21,7 @@ import {
   updateDoc,
   where,
 } from 'firebase/firestore';
-import * as yup from 'yup';
+
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {
   createUserWithEmailAndPassword,
@@ -35,70 +36,65 @@ const Signup = ({ navigation }) => {
   const [email, setemail] = useState('');
   const [pass, setpass] = useState('');
   const [conformPass, setconformPass] = useState('');
-  const [errorMsg, setErrorMsg] = useState('');
+  const [errorErrorepassword, setErrorepassword] = useState();
+  const [erroremail, setErroremail] = useState();
+  const [errorname, setErrorname] = useState();
+
   const [submitButtonDisabled, setSubmitButtonDisabled] = useState(false);
   const [hidenpass, sethidenpss] = useState(true);
   const [hidenconfirmpass, sethidenconfirmpass] = useState(true);
 
-  const loginValidationSchema = yup.object().shape({
-    email: yup
-      .string()
-      .email('Please enter valid email')
-      .required('Email Address is Required'),
-    password: yup
-      .string()
-      .min(8, ({ min }) => `Password must be at least ${min} characters`)
-      .required('Password is required'),
-  });
-  const handleSubmission = async () => {
-    console.log('start');
-    console.log(name);
-    //var validPassRegex = ' (?=.*d)(?=.*[a-z])(?=.*[A-Z]).{8,}';
-    if (!name || !email || !pass) {
-      setErrorMsg('Fill all fields');
-      toast.show({
-        render: () => {
-          return (
-            <Box bg="emerald.500" px="2" py="1" rounded="sm" mb={5}>
-              Fill all fields
-            </Box>
-          );
-        },
-      });
-      return;
+  const validatename = name => {
+    //let re = /\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+/;
+
+    let re = /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]+[ ]*)*$/;
+    return re.test(name);
+  };
+  const validatepassword = password => {
+    let regex =
+      /^(?!.*\s)(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[~`!@#$%^&*()--+={}\[\]|\\:;"'<>,.?/_₹]).{8,16}$/;
+    return regex.test(password);
+  };
+
+  const validateemail = emailv => {
+    let re =
+      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(emailv);
+  };
+  const validate = () => {
+    let returnfalse = true;
+    if (name === '') {
+      setErrorname('Name is Required');
+      returnfalse = false;
+    } else if (!validatename(name)) {
+      setErrorname('Please enter valid Name. ');
+      returnfalse = false;
+    } else if (name.length < 3) {
+      setErrorname('Name is too short');
     }
-
-    // if (!pass.match(validPassRegex)) {
-    //   toast.show({
-    //     render: () => {
-    //       return (
-    //         <Box bg="#ffffff" px="2" py="1" rounded="sm" mb={5}>
-    //           Please Input strong password!!
-    //         </Box>
-    //       );
-    //     },
-    //   });
-    //   return;
-    // }
-    if (pass !== conformPass) {
-      setErrorMsg('passowrd and confirom password are note match');
-      toast.show({
-        render: () => {
-          return (
-            <Box bg="emerald.500" px="2" py="1" rounded="sm" mb={5}>
-              passowrd and confirom password are note match
-            </Box>
-          );
-        },
-      });
-      return;
+    if (email === '') {
+      setErroremail('Email Address is Required');
+      returnfalse = false;
+    } else if (!validateemail(email)) {
+      setErroremail('Please enter valid email. ');
+      returnfalse = false;
     }
-    //console.log(errorMsg);
-
-    setErrorMsg('');
-    console.log('bfr');
-    console.log(name);
-
+    if (pass === '') {
+      setErrorepassword('password is required');
+      returnfalse = false;
+    } else if (!validatepassword(pass)) {
+      setErrorepassword(
+        'Password should contain atleast 8 character. \natleast one Alphabet one symbol and one number',
+      );
+      returnfalse = false;
+    }
+    if (returnfalse) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+  async function Submeted() {
     setSubmitButtonDisabled(true);
     createUserWithEmailAndPassword(auth, email, pass)
       .then(async userCredential => {
@@ -146,8 +142,24 @@ const Signup = ({ navigation }) => {
           },
         });
         console.log('log error ' + err.message);
-        setErrorMsg(err.message);
       });
+  }
+  const handleSubmission = async () => {
+    validate() ? Submeted() : console.log('Validation Failed');
+
+    if (pass !== conformPass) {
+      toast.show({
+        render: () => {
+          return (
+            <Box bg="emerald.500" px="2" py="1" rounded="sm" mb={5}>
+              passowrd and confirom password are note match
+            </Box>
+          );
+        },
+      });
+      return;
+    }
+    //console.log(errorMsg);
   };
 
   return (
@@ -182,6 +194,13 @@ const Signup = ({ navigation }) => {
                   setname(TEXT);
                 }}
               />
+              {errorname ? (
+                <Text color={'#ff0000'}>{errorname}</Text>
+              ) : (
+                <FormControl.HelperText>
+                  Name should contain atleast 3 character.
+                </FormControl.HelperText>
+              )}
             </FormControl>
             <FormControl>
               <FormControl.Label>Email</FormControl.Label>
@@ -191,15 +210,20 @@ const Signup = ({ navigation }) => {
                   setemail(TEXT);
                 }}
               />
+              {erroremail ? (
+                <Text color={'#ff0000'}>{erroremail}</Text>
+              ) : (
+                <FormControl.HelperText></FormControl.HelperText>
+              )}
             </FormControl>
             <FormControl>
               <FormControl.Label>Password</FormControl.Label>
               <Input
-                //type="password"
+                value={pass}
                 secureTextEntry={hidenpass}
                 isRequire
                 onChangeText={TEXT => {
-                  setconformPass(TEXT);
+                  setpass(TEXT);
                 }}
                 InputRightElement={
                   hidenpass ? (
@@ -217,6 +241,15 @@ const Signup = ({ navigation }) => {
                   )
                 }
               />
+
+              {errorErrorepassword ? (
+                <Text color={'#ff0000'}>{errorErrorepassword}</Text>
+              ) : (
+                <FormControl.HelperText>
+                  Password should contain atleast 8 character. atleast one
+                  Alphabet one symbol and one number
+                </FormControl.HelperText>
+              )}
             </FormControl>
             <FormControl>
               <FormControl.Label>Confirm Password</FormControl.Label>
@@ -224,7 +257,7 @@ const Signup = ({ navigation }) => {
                 secureTextEntry={hidenconfirmpass}
                 isRequire
                 onChangeText={TEXT => {
-                  setpass(TEXT);
+                  setconformPass(TEXT);
                 }}
                 InputRightElement={
                   hidenconfirmpass ? (

@@ -19,6 +19,7 @@ import { Rating } from 'react-native-ratings';
 import NumericInput from 'react-native-numeric-input';
 import ReviewUserBook from '../../Component/ReviewUserBook';
 import WriteReviewUserBook from '../../Component/WriteReviewUserBook';
+import { TouchableOpacity, Linking, Platform } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 import SwipSlider from '../../Component/SwipSlider';
@@ -110,6 +111,7 @@ const SingleProductView = ({ route }) => {
       isMounted = false;
     };
   }, [product.email]);
+
   async function deleteAction(key) {
     deleteDoc(doc(db, 'BooksAds', key));
     const qc = query(
@@ -232,7 +234,7 @@ const SingleProductView = ({ route }) => {
             color="#ffffff"
             bg="#5b21b6"
             _pressed={{ bg: '#a78bfa' }}
-            onPress={ADDtoFavorite}
+            onPress={() => ADDtoFavorite()}
             disabled={!flagFavorite}>
             ADD TO Favorite
           </Button>
@@ -331,7 +333,18 @@ const SingleProductView = ({ route }) => {
       return <WriteReviewUserBook productArray={product} />;
     }
   }
+  function dialCall(PhoneNumber) {
+    console.log(PhoneNumber);
+    let phoneNumberCall = '';
 
+    if (Platform.OS === 'android') {
+      phoneNumberCall = 'tel:${' + PhoneNumber + '}';
+    } else {
+      phoneNumberCall = 'telprompt:${' + PhoneNumber + '}';
+    }
+
+    Linking.openURL(phoneNumberCall);
+  }
   return (
     <Box safeArea flex={1} bg={'#ffffff'}>
       <Box flex={1} alignItems={'center'} justifyContent={'center'}>
@@ -364,11 +377,14 @@ const SingleProductView = ({ route }) => {
                 {product.need}
               </Text>
               <Heading fontSize={12} mt={2}>
-                Phone Number:
+                Phone Number:(click on Phone Number for Call)
               </Heading>
-              <Text fontSize={12} lineHeight={24}>
-                {product.PhoneNumber}
-              </Text>
+              <TouchableOpacity onPress={() => dialCall(product.PhoneNumber)}>
+                <Text fontSize={12} lineHeight={24}>
+                  {product.PhoneNumber}
+                </Text>
+              </TouchableOpacity>
+
               <Heading fontSize={12} mt={2}>
                 location:
               </Heading>
