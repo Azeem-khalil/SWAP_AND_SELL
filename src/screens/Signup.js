@@ -84,7 +84,7 @@ const Signup = ({ navigation }) => {
       returnfalse = false;
     } else if (!validatepassword(pass)) {
       setErrorepassword(
-        'Password should contain atleast 8 character. \natleast one Alphabet one symbol and one number',
+        'Password should contain atleast 8 character and utmost 16. \natleast one Alphabet one symbol and one number',
       );
       returnfalse = false;
     }
@@ -116,7 +116,7 @@ const Signup = ({ navigation }) => {
             email: email,
             address: '',
             phoneNumber: '',
-            profileImage: null,
+            profileImage: '',
             rating: 0,
             star1: 0,
             star2: 0,

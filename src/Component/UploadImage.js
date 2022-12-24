@@ -19,7 +19,7 @@ export default function UploadImage(props) {
   const userData = props.userData;
   const [showModal, setShowModal] = useState(false);
   const [galleryPhoto, setGalleryPhoto] = useState();
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState('');
   const [loading, setloading] = useState(false);
 
   const toast = useToast();
@@ -95,12 +95,14 @@ export default function UploadImage(props) {
   };
   return (
     <View style={imageUploaderStyles.container}>
-      {image && (
+      {image !== '' ? (
         <Image
           source={{ uri: image }}
           alt={'image'}
           style={{ width: 200, height: 200 }}
         />
+      ) : (
+        <></>
       )}
       <View style={imageUploaderStyles.uploadBtnContainer}>
         {/* <TouchableOpacity
